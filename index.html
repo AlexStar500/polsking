@@ -163,11 +163,22 @@ const state = {
   currentOptions: [], matchRightOrder: []
 };
 
-// 🚀 НАПРЯМУЮ GOOGLE TRANSLATE
+// Возврат к встроенному синтезатору (Ирина и т.д.)
 function speak(text) {
-    const url = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=pl&q=${encodeURIComponent(text)}`;
-    const audio = new Audio(url);
-    audio.play().catch(e => console.error('TTS Error:', e));
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const msg = new SpeechSynthesisUtterance(text);
+        msg.lang = 'pl-PL';
+        msg.rate = 0.9;
+        
+        const voices = window.speechSynthesis.getVoices();
+        const plVoice = voices.find(v => v.lang === 'pl-PL' || v.lang.startsWith('pl'));
+        if (plVoice) {
+            msg.voice = plVoice;
+        }
+        
+        window.speechSynthesis.speak(msg);
+    }
 }
 
 function t(k) {
