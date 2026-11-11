@@ -43,7 +43,7 @@ button { font-family: inherit; }
 
 /* ── топ-бар ── */
 .top-bar { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 2px solid var(--border); position: sticky; top: 0; background: var(--app-bg); z-index: 10; transition: background 0.3s; }
-.brand-small { display: flex; align-items: center; gap: 8px; font-weight: 900; color: var(--primary); font-size: 18px; }
+.brand-small { display: flex; align-items: center; gap: 8px; font-weight: 900; color: var(--primary); font-size: 18px; cursor: pointer; }
 .top-actions { display: flex; align-items: center; gap: 12px; }
 .icon-btn { background: none; border: none; cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; border-radius: 8px; color: var(--text-muted); }
 .icon-btn:hover { background: var(--bg); color: var(--text); }
@@ -55,16 +55,16 @@ button { font-family: inherit; }
 
 /* ── карта ── */
 .map-screen { padding: 16px; flex: 1; overflow-y: auto; }
-.unit-header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: #fff; padding: 16px 22px; border-radius: 18px; margin: 22px 0 8px; font-weight: 900; font-size: 18px; box-shadow: 0 4px 0 var(--primary-dark); }
+.unit-header { color: #fff; padding: 16px 22px; border-radius: 18px; margin: 22px 0 8px; font-weight: 900; font-size: 18px; }
 .unit-header small { display: block; font-weight: 700; opacity: 0.8; font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 3px; }
 .lessons-path { display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 16px 0 24px; }
 .lesson-item { display: flex; flex-direction: column; align-items: center; gap: 6px; }
 @media (min-width: 400px) { .lesson-item:nth-child(4n+1) { transform: translateX(-40px); } .lesson-item:nth-child(4n+3) { transform: translateX(40px); } }
-.lesson-btn { width: 78px; height: 78px; border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 0 rgba(0,0,0,0.18); transition: transform 0.1s; }
-.lesson-btn:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 3px 0 rgba(0,0,0,0.18); }
+.lesson-btn { width: 78px; height: 78px; border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.1s; color: #fff; }
+.lesson-btn:active:not(:disabled) { transform: translateY(3px) !important; }
 .lesson-btn.locked { background: var(--border); box-shadow: 0 6px 0 rgba(0,0,0,0.1); cursor: not-allowed; }
-.lesson-btn.available { background: var(--primary); color: #fff; }
 .lesson-btn.completed { background: var(--gold); box-shadow: 0 6px 0 var(--gold-dark); }
+.lesson-btn.available { cursor: pointer; }
 .lesson-btn svg, .lesson-btn img { width: 34px; height: 34px; }
 .lesson-label { font-size: 12px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; text-align: center; max-width: 100px; }
 
@@ -153,8 +153,19 @@ let progress;
 try { progress = Object.assign({}, DEFAULT, JSON.parse(localStorage.getItem('polsking') || '{}')); }
 catch(e) { progress = Object.assign({}, DEFAULT); }
 
+// Цвета для модулей (по кругу)
+const UNIT_COLORS = [
+  { bg: '#c8102e', shadow: '#8b0a1f' }, // Красный
+  { bg: '#1cb0f6', shadow: '#1899d6' }, // Синий
+  { bg: '#58cc02', shadow: '#46a302' }, // Зелёный
+  { bg: '#ce82ff', shadow: '#a568cc' }, // Фиолетовый
+  { bg: '#ff9600', shadow: '#cc7800' }, // Оранжевый
+  { bg: '#2b70c9', shadow: '#1f5296' }, // Тёмно-синий
+];
+
 const state = {
-  lang: null, view: 'lang',
+  lang: progress.lang || null,
+  view: progress.lang ? 'map' : 'lang', // Автовход на карту, если язык уже выбран
   unitIdx: 0, lessonIdx: 0,
   exercises: [], exIdx: 0,
   hearts: 5, lessonXp: 0, xpGained: 0, failed: false,
@@ -236,7 +247,7 @@ function renderMap() {
   let html = `<div class="map-screen">`;
   html += `
     <div class="top-bar">
-      <div class="brand-small"><img src="${IMAGES.eagle}" style="width:30px;height:30px">Polsking</div>
+      <div class="brand-small" onclick="goHome()"><img src="${IMAGES.eagle}" style="width:30px;height:30px">Polsking</div>
       <div class="top-actions">
         <button class="lang-switch" onclick="toggleLang()">
           <img src="${state.lang === 'ru' ? IMAGES.flag_ru : IMAGES.flag_gb}">
@@ -248,22 +259,46 @@ function renderMap() {
       </div>
       <div class="top-stats"><div class="stat"><img src="${IMAGES.star}">${progress.xp}</div></div>
     </div>`;
+    
   course.units.forEach((unit, ui) => {
-    html += `<div class="unit-header"><small>${t('unit')} ${ui + 1}</small>${unit.title}</div>`;
+    const color = UNIT_COLORS[ui % UNIT_COLORS.length];
+    
+    html += `<div class="unit-header" style="background: linear-gradient(135deg, ${color.bg} 0%, ${color.shadow} 100%); box-shadow: 0 4px 0 ${color.shadow};">
+      <small>${t('unit')} ${ui + 1}</small>${unit.title}</div>`;
+      
     html += `<div class="lessons-path">`;
     unit.lessons.forEach((lesson, li) => {
       const key = state.lang + '_' + ui + '-' + li;
       const completed = !!progress.completed[key];
       const unlocked = isUnlocked(ui, li);
-      const cls = completed ? 'completed' : (unlocked ? 'available' : 'locked');
-      let inner = completed ? `<span style="font-size:32px;color:#fff;font-weight:900">✓</span>` : (unlocked ? `<span style="font-size:30px;color:#fff;font-weight:900">▶</span>` : `<span style="font-size:24px;color:var(--text-muted)">🔒</span>`);
-      html += `<div class="lesson-item"><button class="lesson-btn ${cls}" data-u="${ui}" data-l="${li}" ${unlocked ? '' : 'disabled'}>${inner}</button><div class="lesson-label">${lesson.title}</div></div>`;
+      
+      let btnStyle = '';
+      let cls = 'lesson-btn';
+      let inner = '';
+      
+      if (completed) {
+        cls += ' completed';
+        inner = `<span style="font-size:32px;color:#fff;font-weight:900">✓</span>`;
+      } else if (unlocked) {
+        cls += ' available';
+        btnStyle = `background: ${color.bg}; box-shadow: 0 6px 0 ${color.shadow};`;
+        inner = `<span style="font-size:30px;color:#fff;font-weight:900">▶</span>`;
+      } else {
+        cls += ' locked';
+        inner = `<span style="font-size:24px;color:var(--text-muted)">🔒</span>`;
+      }
+      
+      html += `<div class="lesson-item">
+        <button class="${cls}" style="${btnStyle}" data-u="${ui}" data-l="${li}" ${unlocked ? '' : 'disabled'}>${inner}</button>
+        <div class="lesson-label">${lesson.title}</div>
+      </div>`;
     });
     html += `</div>`;
   });
   html += `</div>`;
   return html;
 }
+
 function isUnlocked(ui, li) {
   if (ui === 0 && li === 0) return true;
   const key = (u, l) => state.lang + '_' + u + '-' + l;
@@ -283,6 +318,10 @@ function toggleLang() {
 function toggleTheme() {
   progress.theme = progress.theme === 'dark' ? 'light' : 'dark';
   saveProgress(); render();
+}
+function goHome() {
+  state.view = 'lang';
+  render();
 }
 
 function startLesson(ui, li) {
@@ -395,7 +434,6 @@ function bindLesson() {
   const inputField = document.getElementById('input-field');
   if (inputField) {
     inputField.oninput = (e) => { state.inputValue = e.target.value; };
-    // Автоматическая проверка по Enter
     inputField.onkeydown = (e) => { if (e.key === 'Enter' && state.inputValue) checkAnswer(); };
   }
 
@@ -428,21 +466,16 @@ function bindLesson() {
       if (state.matchSelected === i) { state.matchSelected = null; render(); }
       else { state.matchSelected = i; render(); }
     } else {
-      // Клик по правой колонке
       if (state.matchSelected !== null) {
-        // Проверяем пару
         if (state.matchSelected === i) {
-          // Правильно
           state.matchMatched.push(i);
           state.matchSelected = null;
           if (state.matchMatched.length === ex.pairs.length) {
-             // Все пары собраны - авто-проверка
              checkAnswer();
           } else {
              render();
           }
         } else {
-          // Неправильно - звук и сброс
           playSound(false);
           state.matchSelected = null;
           render();
