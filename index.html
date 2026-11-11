@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Polsking</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,CjxzdmcgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJyB2aWV3Qm94PScwIDAgMjAwIDIwMCc+CiAgPGNpcmNsZSBjeD0nMTAwJyBjeT0nMTE1JyByPSc3MicgZmlsbD0nI2ZmZicgc3Ryb2tlPScjYzgxMDJlJyBzdHJva2Utd2lkdGg9JzUnLz4KICA8ZWxsaXBzZSBjeD0nNzgnIGN5PScxMDUnIHJ4PScxMCcgcnk9JzEyJyBmaWxsPScjMWExYTFhJy8+CiAgPGVsbGlwc2UgY3g9JzEyMicgY3k9JzEwNScgcng9JzEwJyByeT0nMTInIGZpbGw9JyMxYTFhMWEnLz4KICA8Y2lyY2xlIGN4PSc4MScgY3k9JzEwMScgcj0nMy41JyBmaWxsPScjZmZmJy8+CiAgPGNpcmNsZSBjeD0nMTI1JyBjeT0nMTAxJyByPSczLjUnIGZpbGw9JyNmZmYnLz4KICA8cGF0aCBkPSdNIDg2IDEyOCBMIDEwMCAxNTggTCAxMTQgMTI4IFonIGZpbGw9JyNmNWM4NDInIHN0cm9rZT0nI2M4MTAyZScgc3Ryb2tlLXdpZHRoPSczJyBzdHJva2UtbGluZWpvaW49J3JvdW5kJy8+CiAgPGNpcmNsZSBjeD0nNTgnIGN5PScxMjUnIHI9JzknIGZpbGw9JyNmZmIzYjMnIG9wYWNpdHk9JzAuNTUnLz4KICA8Y2lyY2xlIGN4PScxNDInIGN5PScxMjUnIHI9JzknIGZpbGw9JyNmZmIzYjMnIG9wYWNpdHk9JzAuNTUnLz4KICAKPC9zdmc+Cg==">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,CjxzdmcgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJyB2aWV3Qm94PScwIDAgMjAwIDIwMCc+CiAgPGNpcmNsZSBjeD0nMTAwJyBjeT0nMTE1JyByPSc3MicgZmlsbD0nI2ZmZicgc3Ryb2tlPScjYzgxMDJlJyBzdHJva2Utd2lkdGg9JzUnLz4KICA8cGF0aCBkPSdNIDU1IDYyIEwgNjggMjggTCA4NCA1MCBMIDEwMCAyMCBMIDExNiA1MCBMIDEzMiAyOCBMIDE0NSA2MiBaJyBmaWxsPScjZjVjODQyJyBzdHJva2U9JyNjODEwMmUnIHN0cm9rZS13aWR0aD0nMy41JyBzdHJva2UtbGluZWpvaW49J3JvdW5kJy8+CiAgPGVsbGlwc2UgY3g9Jzc4JyBjeT0nMTA1JyByeD0nMTAnIHJ5PScxMicgZmlsbD0nIzFhMWExYScvPgogIDxlbGxpcHNlIGN4PScxMjInIGN5PScxMDUnIHJ4PScxMCcgcnk9JzEyJyBmaWxsPScjMWExYTFhJy8+CiAgPGNpcmNsZSBjeD0nODEnIGN5PScxMDEnIHI9JzMuNScgZmlsbD0nI2ZmZicvPgogIDxjaXJjbGUgY3g9JzEyNScgY3k9JzEwMScgcj0nMy41JyBmaWxsPScjZmZmJy8+CiAgPHBhdGggZD0nTSA4NiAxMjggTCAxMDAgMTU4IEwgMTE0IDEyOCBaJyBmaWxsPScjZjVjODQyJyBzdHJva2U9JyNjODEwMmUnIHN0cm9rZS13aWR0aD0nMycgc3Ryb2tlLWxpbmVqb2luPSdyb3VuZCcvPgogIDxjaXJjbGUgY3g9JzU4JyBjeT0nMTI1JyByPSc5JyBmaWxsPScjZmZiM2IzJyBvcGFjaXR5PScwLjU1Jy8+CiAgPGNpcmNsZSBjeD0nMTQyJyBjeT0nMTI1JyByPSc5JyBmaWxsPScjZmZiM2IzJyBvcGFjaXR5PScwLjU1Jy8+CiAgCjwvc3ZnPgo=">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -28,29 +28,25 @@ body { font-family: 'Nunito', system-ui, sans-serif; background: var(--bg); colo
 .app { max-width: 600px; margin: 0 auto; min-height: 100vh; background: var(--app-bg); box-shadow: 0 0 40px var(--shadow); display: flex; flex-direction: column; }
 button { font-family: inherit; }
 
-/* ── язык ── */
 .lang-screen { padding: 40px 24px; text-align: center; flex: 1; display: flex; flex-direction: column; justify-content: center; }
 .mascot { width: 140px; height: 140px; margin: 16px auto 24px; display: block; }
 .brand { font-size: 36px; font-weight: 900; color: var(--primary); letter-spacing: -1px; }
-.brand-sub { color: var(--text-muted); margin-top: 6px; font-weight: 600; }
 .lang-options { display: flex; flex-direction: column; gap: 12px; max-width: 340px; margin: 32px auto 16px; width: 100%; }
 .lang-btn { display: flex; align-items: center; gap: 14px; padding: 16px 18px; border: 2px solid var(--border); background: var(--app-bg); border-radius: 16px; font-weight: 700; font-size: 16px; cursor: pointer; box-shadow: 0 4px 0 var(--border); color: var(--text); transition: transform 0.1s; }
 .lang-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--border); }
 .lang-btn img { width: 38px; border-radius: 4px; }
 
-/* ── топ-бар ── */
 .top-bar { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 2px solid var(--border); position: sticky; top: 0; background: var(--app-bg); z-index: 10; }
 .top-left { display: flex; align-items: center; gap: 10px; }
 .top-center { display: flex; align-items: center; gap: 8px; }
 .top-right { display: flex; align-items: center; gap: 10px; }
 .brand-small { font-weight: 900; color: var(--primary); font-size: 18px; cursor: pointer; display: flex; align-items: center; gap: 6px; }
-.icon-btn { width: 36px; height: 36px; border-radius: 10px; border: 2px solid var(--border); background: var(--app-bg); box-shadow: 0 3px 0 var(--border); cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-muted); transition: transform 0.1s; }
+.icon-btn { width: 36px; height: 36px; border-radius: 10px; border: 2px solid var(--border); background: var(--app-bg); box-shadow: 0 3px 0 var(--border); cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-muted); transition: transform 0.1s; padding: 0; }
 .icon-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--border); }
-.icon-btn svg { width: 20px; height: 20px; }
+.icon-btn img { width: 18px; height: 18px; }
 .stat { display: flex; align-items: center; gap: 4px; font-weight: 800; color: var(--text-muted); font-size: 15px; }
 .stat img { width: 20px; height: 20px; }
 
-/* ── карта ── */
 .map-screen { padding: 16px; flex: 1; overflow-y: auto; }
 .section-header { font-size: 20px; font-weight: 900; color: var(--text); margin: 24px 0 10px; padding: 0 8px; }
 .unit-header { color: #fff; padding: 16px 22px; border-radius: 18px; margin: 16px 0 8px; font-weight: 900; font-size: 18px; }
@@ -65,7 +61,6 @@ button { font-family: inherit; }
 .lesson-btn.available { cursor: pointer; }
 .lesson-label { font-size: 12px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; text-align: center; max-width: 100px; }
 
-/* ── урок ── */
 .lesson-screen { padding: 16px 20px; min-height: 100vh; display: flex; flex-direction: column; }
 .lesson-top { display: flex; align-items: center; gap: 14px; margin-bottom: 26px; }
 .progress-bar { flex: 1; height: 16px; background: var(--border); border-radius: 8px; overflow: hidden; }
@@ -75,7 +70,7 @@ button { font-family: inherit; }
 .prompt-label { font-size: 12px; text-transform: uppercase; color: var(--text-muted); font-weight: 800; letter-spacing: 1.2px; margin-bottom: 12px; }
 .prompt-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
 .prompt { font-size: 26px; font-weight: 900; color: var(--text); }
-.tts-btn { background: none; border: none; cursor: pointer; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; opacity: 0.7; }
+.tts-btn { background: none; border: none; cursor: pointer; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; opacity: 0.7; padding: 0;}
 .tts-btn:hover { opacity: 1; }
 .tts-btn img { width: 100%; height: 100%; }
 
@@ -111,7 +106,6 @@ button { font-family: inherit; }
 .btn-secondary { background: var(--app-bg); color: var(--primary); border: 2px solid var(--border); box-shadow: 0 4px 0 var(--border); }
 .btn-check { width: 100%; }
 
-/* ── результат ── */
 .result-screen { padding: 48px 24px; text-align: center; flex: 1; display: flex; flex-direction: column; justify-content: center; }
 .result-screen h1 { font-size: 30px; color: var(--gold); margin: 8px 0 16px; }
 .result-sub { color: var(--text-muted); font-weight: 600; }
@@ -120,14 +114,13 @@ button { font-family: inherit; }
 .result-stat-label { font-size: 11px; color: var(--text-muted); font-weight: 800; text-transform: uppercase; margin-bottom: 6px; }
 .result-stat-value { font-size: 26px; font-weight: 900; color: var(--gold-dark); }
 
-/* ── новости и магазин ── */
 .page-screen { padding: 20px; flex: 1; overflow-y: auto; }
 .page-title { font-size: 26px; font-weight: 900; margin-bottom: 16px; }
 .news-card { background: var(--app-bg); border: 2px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 16px; box-shadow: 0 4px 0 var(--border); }
 .news-topic { font-size: 11px; font-weight: 800; color: var(--primary); text-transform: uppercase; margin-bottom: 6px; }
-.news-title { font-size: 18px; font-weight: 900; margin-bottom: 10px; }
-.news-text { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
-.news-trans { font-size: 14px; color: var(--text-muted); font-style: italic; border-left: 3px solid var(--border); padding-left: 10px; }
+.news-title { font-size: 18px; font-weight: 900; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+.news-text { font-size: 15px; font-weight: 600; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+.news-trans { font-size: 14px; color: var(--text-muted); font-style: italic; border-left: 3px solid var(--border); padding-left: 10px; margin-top: 8px; }
 .shop-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .shop-item { background: var(--app-bg); border: 2px solid var(--border); border-radius: 16px; padding: 16px; text-align: center; box-shadow: 0 4px 0 var(--border); }
 .shop-item.equipped { border-color: var(--success); background: var(--success-bg); }
@@ -144,7 +137,7 @@ button { font-family: inherit; }
 <script>
 const IMAGES = {"heart": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAyNCAyNCc+PHBhdGggZD0nTTEyIDIxLjM1bC0xLjQ1LTEuMzJDNS40IDE1LjM2IDIgMTIuMjggMiA4LjUgMiA1LjQyIDQuNDIgMyA3LjUgM2MxLjc0IDAgMy40MS44MSA0LjUgMi4wOUMxMy4wOSAzLjgxIDE0Ljc2IDMgMTYuNSAzIDE5LjU4IDMgMjIgNS40MiAyMiA4LjVjMCAzLjc4LTMuNCA2Ljg2LTguNTUgMTEuNTRMMTIgMjEuMzV6JyBmaWxsPScjZmY0YjRiJy8+PC9zdmc+", "star": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAyNCAyNCc+PHBhdGggZD0nTTEyIDJsMi45IDYuOSA3LjEuNi01LjQgNC43IDEuNyA3LjJMMTIgMTcuM2wtNi4zIDQuMSAxLjctNy4yTDIgOS41bDcuMS0uNnonIGZpbGw9JyNmZmM4MDAnLz48L3N2Zz4=", "flame": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAyNCAyNCc+PHBhdGggZD0nTTEzIDJjMCA0LTUgNS01IDEwYTQgNCAwIDAgMCA4IDBjMC0zLTItNC0zLTYgLjkgMCAyLS45IDItMi0xIC45LTIgLjktMiAuOXonIGZpbGw9JyNmZjk2MDAnLz48L3N2Zz4=", "speaker": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAyNCAyNCcgZmlsbD0nIzFjYjBmNic+PHBhdGggZD0nTTMgOXY2aDRsNSA1VjRMNyA5SDN6bTEzLjUgM2MwLTEuNzctMS4wMi0zLjI5LTIuNS00LjAzdjguMDVjMS40OC0uNzMgMi41LTIuMjUgMi41LTQuMDJ6TTE0IDMuMjN2Mi4wNmMyLjg5Ljg2IDUgMy41NCA1IDYuNzFzLTIuMTEgNS44NS01IDYuNzF2Mi4wNmM0LjAxLS45MSA3LTQuNDkgNy04Ljc3cy0yLjk5LTcuODYtNy04Ljc3eicvPjwvc3ZnPg==", "news_icon": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAyNCAyNCcgZmlsbD0nY3VycmVudENvbG9yJz48cGF0aCBkPSdNMjAgM0g0Yy0xLjEgMC0yIC45LTIgMnYxNGMwIDEuMS45IDIgMiAyaDE2YzEuMSAwIDItLjkgMi0yVjVjMC0xLjEtLjktMi0yLTJ6TTkgMTdINXYtMmg0djJ6bTAtNEg1di0yaDR2MnptMC00SDVWN2g0djJ6bTEwIDhoLTh2LTJoOHYyem0wLTRoLTh2LTJoOHYyem0wLTRoLThWN2g4djJ6Jy8+PC9zdmc+", "shop_icon": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAyNCAyNCcgZmlsbD0nY3VycmVudENvbG9yJz48cGF0aCBkPSdNMTggNmgtMmMwLTIuMjEtMS43OS00LTQtNFM4IDMuNzkgOCA2SDZjLTEuMSAwLTIgLjktMiAydjEyYzAgMS4xLjkgMiAyIDJoMTJjMS4xIDAgMi0uOSAyLTJWOGMwLTEuMS0uOS0yLTItMnptLTYtMmMxLjEgMCAyIC45IDIgMmgtNGMwLTEuMS45LTIgMi0yem02IDE2SDZWOGgxMnYxMnonLz48L3N2Zz4=", "flag_pl": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA2MCA0MCc+PGRlZnM+PGNsaXBQYXRoIGlkPSdwJz48cmVjdCB3aWR0aD0nNjAnIGhlaWdodD0nNDAnIHJ4PSc0Jy8+PC9jbGlwUGF0aD48L2RlZnM+PGcgY2xpcC1wYXRoPSd1cmwoI3ApJz48cmVjdCB3aWR0aD0nNjAnIGhlaWdodD0nMjAnIGZpbGw9JyNmZmYnLz48cmVjdCB5PScyMCcgd2lkdGg9JzYwJyBoZWlnaHQ9JzIwJyBmaWxsPScjZGMxNDNjJy8+PC9nPjwvc3ZnPg==", "flag_ru": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA2MCA0MCc+PGRlZnM+PGNsaXBQYXRoIGlkPSdyJz48cmVjdCB3aWR0aD0nNjAnIGhlaWdodD0nNDAnIHJ4PSc0Jy8+PC9jbGlwUGF0aD48L2RlZnM+PGcgY2xpcC1wYXRoPSd1cmwoI3IpJz48cmVjdCB3aWR0aD0nNjAnIGhlaWdodD0nMTMuMzMnIGZpbGw9JyNmZmYnLz48cmVjdCB5PScxMy4zMycgd2lkdGg9JzYwJyBoZWlnaHQ9JzEzLjM0JyBmaWxsPScjMDAzOWE2Jy8+PHJlY3QgeT0nMjYuNjcnIHdpZHRoPSc2MCcgaGVpZ2h0PScxMy4zMycgZmlsbD0nI2Q1MmIxZScvPjwvZz48L3N2Zz4=", "flag_gb": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA2MCA0MCc+PGRlZnM+PGNsaXBQYXRoIGlkPSdnJz48cmVjdCB3aWR0aD0nNjAnIGhlaWdodD0nNDAnIHJ4PSc0Jy8+PC9jbGlwUGF0aD48L2RlZnM+PGcgY2xpcC1wYXRoPSd1cmwoI2cpJz48cmVjdCB3aWR0aD0nNjAnIGhlaWdodD0nNDAnIGZpbGw9JyMwMTIxNjknLz48cGF0aCBkPSdNMCAwTDYwIDQwTTYwIDBMMCA0MCcgc3Ryb2tlPScjZmZmJyBzdHJva2Utd2lkdGg9JzgnLz48cGF0aCBkPSdNMCAwTDYwIDQwTTYwIDBMMCA0MCcgc3Ryb2tlPScjYzgxMDJlJyBzdHJva2Utd2lkdGg9JzMnLz48cGF0aCBkPSdNMzAgMFY0ME0wIDIwSDYwJyBzdHJva2U9JyNmZmYnIHN0cm9rZS13aWR0aD0nMTQnLz48cGF0aCBkPSdNMzAgMFY0ME0wIDIwSDYwJyBzdHJva2U9JyNjODEwMmUnIHN0cm9rZS13aWR0aD0nNycvPjwvZz48L3N2Zz4="};
 const COURSES = {"ru": {"sections": [{"title": "Секция 1: Начало пути", "units": [{"title": "Основы", "lessons": [{"title": "Приветствия", "exercises": [{"type": "choice", "prompt": "Cześć", "answer": "Привет", "options": ["Привет", "Пока", "Спасибо"]}, {"type": "choice", "prompt": "Do widzenia", "answer": "До свидания", "options": ["До свидания", "Доброе утро", "Извините"]}, {"type": "translate", "prompt": "Доброе утро", "answer": "Dzień dobry", "bank": ["Dzień", "dobry", "Cześć", "do"]}]}, {"title": "Да и нет", "exercises": [{"type": "choice", "prompt": "Tak", "answer": "Да", "options": ["Да", "Нет", "Может"]}, {"type": "translate", "prompt": "Да, спасибо", "answer": "Tak, dziękuję", "bank": ["Tak", "dziękuję", "proszę", "nie"]}]}]}, {"title": "Люди", "lessons": [{"title": "Местоимения", "exercises": [{"type": "choice", "prompt": "ja", "answer": "я", "options": ["я", "ты", "он"]}, {"type": "choice", "prompt": "ty", "answer": "ты", "options": ["ты", "я", "она"]}]}]}, {"title": "Еда", "lessons": [{"title": "Продукты", "exercises": [{"type": "match", "prompt": "Соедини слова", "pairs": [["woda", "вода"], ["chleb", "хлеб"], ["mleko", "молоко"]]}, {"type": "translate", "prompt": "вода и хлеб", "answer": "woda i chleb", "bank": ["woda", "i", "chleb", "mleko"]}]}]}, {"title": "Действия", "lessons": [{"title": "Глаголы", "exercises": [{"type": "choice", "prompt": "jeść", "answer": "есть", "options": ["есть", "пить", "спать"]}, {"type": "translate", "prompt": "есть и пить", "answer": "jeść i pić", "bank": ["jeść", "i", "pić", "spać"]}]}]}, {"title": "Винительный", "lessons": [{"title": "Biernik", "exercises": [{"type": "choice", "prompt": "Mam kota", "answer": "У меня есть кот", "options": ["У меня есть кот", "У меня есть собака", "Я люблю кота"]}, {"type": "translate", "prompt": "Я пью кофе", "answer": "Piję kawę", "bank": ["Piję", "kawę", "kawa", "mam"]}]}]}]}, {"title": "Секция 2: Продвинутый уровень", "units": [{"title": "Творительный", "lessons": [{"title": "Narzędnik", "exercises": [{"type": "choice", "prompt": "Jestem studentem", "answer": "Я студент", "options": ["Я студент", "Я врач", "Я учитель"]}, {"type": "translate", "prompt": "Я интересуюсь спортом", "answer": "Interesuję się sportem", "bank": ["Interesuję", "się", "sportem", "sport"]}]}]}, {"title": "Путешествия", "lessons": [{"title": "В дороге", "exercises": [{"type": "match", "prompt": "Соедини пары", "pairs": [["pociąg", "поезд"], ["samolot", "самолет"], ["autobus", "автобус"]]}, {"type": "choice", "prompt": "Idę na dworzec", "answer": "Я иду на вокзал", "options": ["Я иду на вокзал", "Я иду в аэропорт", "Я иду домой"]}]}]}]}]}, "en": {"sections": [{"title": "Section 1: Basics", "units": [{"title": "Basics", "lessons": [{"title": "Greetings", "exercises": [{"type": "choice", "prompt": "Cześć", "answer": "Hello", "options": ["Hello", "Bye", "Thanks"]}, {"type": "translate", "prompt": "Good morning", "answer": "Dzień dobry", "bank": ["Dzień", "dobry", "Cześć", "do"]}]}]}, {"title": "Food", "lessons": [{"title": "Basic food", "exercises": [{"type": "match", "prompt": "Match the pairs", "pairs": [["woda", "water"], ["chleb", "bread"], ["mleko", "milk"]]}, {"type": "translate", "prompt": "water and bread", "answer": "woda i chleb", "bank": ["woda", "i", "chleb", "mleko"]}]}]}]}]}};
-const SHOP_ITEMS = [{"id": "crown", "name": "Корона", "price": 50, "desc": "Для настоящего монарха", "svg": "<path d='M 55 62 L 68 28 L 84 50 L 100 20 L 116 50 L 132 28 L 145 62 Z' fill='#f5c842' stroke='#c8102e' stroke-width='3.5' stroke-linejoin='round'/>"}, {"id": "glasses", "name": "Очки", "price": 100, "desc": "Умный вид для учёбы", "svg": "<path d='M 55 95 Q 78 110 100 95 Q 122 110 145 95' stroke='#1a1a1a' stroke-width='6' fill='none'/><circle cx='65' cy='105' r='18' fill='rgba(0,0,0,0.1)' stroke='#1a1a1a' stroke-width='4'/><circle cx='135' cy='105' r='18' fill='rgba(0,0,0,0.1)' stroke='#1a1a1a' stroke-width='4'/>"}, {"id": "tie", "name": "Галстук", "price": 150, "desc": "Официальный стиль", "svg": "<path d='M 95 150 L 105 150 L 110 180 L 100 195 L 90 180 Z' fill='#1cb0f6' stroke='#1899d6' stroke-width='2'/>"}];
+const SHOP_ITEMS = [{"id": "glasses", "name": "Очки", "price": 100, "desc": "Умный вид для учёбы", "svg": "<path d='M 55 95 Q 78 110 100 95 Q 122 110 145 95' stroke='#1a1a1a' stroke-width='6' fill='none'/><circle cx='65' cy='105' r='18' fill='rgba(0,0,0,0.1)' stroke='#1a1a1a' stroke-width='4'/><circle cx='135' cy='105' r='18' fill='rgba(0,0,0,0.1)' stroke='#1a1a1a' stroke-width='4'/>"}, {"id": "tie", "name": "Галстук", "price": 150, "desc": "Официальный стиль", "svg": "<path d='M 95 150 L 105 150 L 110 180 L 100 195 L 90 180 Z' fill='#1cb0f6' stroke='#1899d6' stroke-width='2'/>"}, {"id": "cap", "name": "Кепка", "price": 200, "desc": "Спортивный стиль", "svg": "<path d='M 50 45 C 50 10, 150 10, 150 45 Z' fill='#58cc02' stroke='#46a302' stroke-width='3'/><rect x='45' y='45' width='110' height='10' rx='5' fill='#46a302'/>"}];
 const NEWS_DATA = {"ru": [{"topic": "Наука", "title": "Nowe odkrycie w Polsce", "text": "Naukowcy z Uniwersytetu Warszawskiego odkryli nowy gatunek grzyba w Puszczy Białowieskiej.", "trans": "Учёные из Варшавского университета обнаружили новый вид гриба в Беловежской пуще."}, {"topic": "Спорт", "title": "Polska wygrywa mecz", "text": "Reprezentacja Polski w piłce nożnej wygrała wczorajszy mecz towarzyski 2:0.", "trans": "Сборная Польши по футболу выиграла вчерашний товарищеский матч со счётом 2:0."}, {"topic": "Культура", "title": "Festiwal muzyczny", "text": "W Krakowie rozpoczął się coroczny festiwal muzyki klasycznej poświęcony Fryderykowi Chopinowi.", "trans": "В Кракове начался ежегодный фестиваль классической музыки, посвящённый Фредерику Шопену."}], "en": [{"topic": "Science", "title": "New discovery in Poland", "text": "Scientists from the University of Warsaw have discovered a new species of fungus in the Białowieża Forest.", "trans": "Scientists from the University of Warsaw discovered a new fungus species in the Białowieża Forest."}, {"topic": "Sports", "title": "Poland wins the match", "text": "The Polish national football team won yesterday's friendly match 2:0.", "trans": "The Polish national football team won yesterday's friendly match 2:0."}, {"topic": "Culture", "title": "Music festival", "text": "The annual classical music festival dedicated to Fryderyk Chopin has begun in Krakow.", "trans": "The annual classical music festival dedicated to Fryderyk Chopin has begun in Krakow."}]};
 
 const DEFAULT = { xp: 0, completed: {}, lang: null, theme: 'light', streak: 0, lastPlayed: null, owned: [], equipped: 'none' };
@@ -153,7 +146,7 @@ try { progress = Object.assign({}, DEFAULT, JSON.parse(localStorage.getItem('pol
 
 function getEagleSVG() {
     const overlay = (progress.equipped && progress.equipped !== 'none') ? SHOP_ITEMS.find(i => i.id === progress.equipped).svg : '';
-    const base = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><circle cx='100' cy='115' r='72' fill='#fff' stroke='#c8102e' stroke-width='5'/><ellipse cx='78' cy='105' rx='10' ry='12' fill='#1a1a1a'/><ellipse cx='122' cy='105' rx='10' ry='12' fill='#1a1a1a'/><circle cx='81' cy='101' r='3.5' fill='#fff'/><circle cx='125' cy='101' r='3.5' fill='#fff'/><path d='M 86 128 L 100 158 L 114 128 Z' fill='#f5c842' stroke='#c8102e' stroke-width='3' stroke-linejoin='round'/><circle cx='58' cy='125' r='9' fill='#ffb3b3' opacity='0.55'/><circle cx='142' cy='125' r='9' fill='#ffb3b3' opacity='0.55'/>${overlay}</svg>`;
+    const base = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><circle cx='100' cy='115' r='72' fill='#fff' stroke='#c8102e' stroke-width='5'/><path d='M 55 62 L 68 28 L 84 50 L 100 20 L 116 50 L 132 28 L 145 62 Z' fill='#f5c842' stroke='#c8102e' stroke-width='3.5' stroke-linejoin='round'/><ellipse cx='78' cy='105' rx='10' ry='12' fill='#1a1a1a'/><ellipse cx='122' cy='105' rx='10' ry='12' fill='#1a1a1a'/><circle cx='81' cy='101' r='3.5' fill='#fff'/><circle cx='125' cy='101' r='3.5' fill='#fff'/><path d='M 86 128 L 100 158 L 114 128 Z' fill='#f5c842' stroke='#c8102e' stroke-width='3' stroke-linejoin='round'/><circle cx='58' cy='125' r='9' fill='#ffb3b3' opacity='0.55'/><circle cx='142' cy='125' r='9' fill='#ffb3b3' opacity='0.55'/>${overlay}</svg>`;
     return "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(base)));
 }
 const EAGLE_IMG = getEagleSVG();
@@ -168,6 +161,35 @@ const state = {
   currentOptions: [], matchRightOrder: []
 };
 
+// Инициализация польского TTS
+let plVoice = null;
+function initTTS() {
+    if ('speechSynthesis' in window) {
+        const updateVoices = () => {
+            const voices = window.speechSynthesis.getVoices();
+            plVoice = voices.find(v => v.lang === 'pl-PL' || v.lang === 'pl_PL' || v.lang.startsWith('pl'));
+        };
+        updateVoices();
+        if (window.speechSynthesis.onvoiceschanged !== undefined) {
+            window.speechSynthesis.onvoiceschanged = updateVoices;
+        }
+    }
+}
+initTTS();
+
+function speak(text) {
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        if (!plVoice) initTTS();
+        
+        const msg = new SpeechSynthesisUtterance(text);
+        if (plVoice) msg.voice = plVoice; // Используем именно польский голос
+        msg.lang = 'pl-PL';
+        msg.rate = 0.9;
+        window.speechSynthesis.speak(msg);
+    }
+}
+
 function t(k) {
   const texts = {
     ru: { check: 'Проверить', cont: 'Продолжить', retry: 'Повторить', correct: 'Отлично!', wrong: 'Ошибка', unitDone: 'Урок пройден!', xp: 'Опыт', failTitle: 'Не сдавайся!', failSub: 'Попробуй ещё раз' },
@@ -180,15 +202,6 @@ function saveProgress() { localStorage.setItem('polsking', JSON.stringify(progre
 function norm(s) { return s.toLowerCase().replace(/[.,!?;:'"„”«»()]/g, '').replace(/\s+/g, ' ').trim(); }
 function shuffleArray(arr) { return [...arr].sort(() => Math.random() - 0.5); }
 function playSound(ok) { const a = document.getElementById(ok ? 'sfx-apply' : 'sfx-deny'); if(a) { a.currentTime=0; a.play().catch(()=>{}); } }
-function speak(text) {
-    if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-        const msg = new SpeechSynthesisUtterance(text);
-        msg.lang = 'pl-PL';
-        msg.rate = 0.9;
-        window.speechSynthesis.speak(msg);
-    }
-}
 function applyTheme() { document.documentElement.setAttribute('data-theme', progress.theme || 'light'); }
 
 function checkStreak() {
@@ -225,8 +238,8 @@ function renderTopBar() {
         <div class="brand-small" onclick="goView('lang')">Polsking</div>
       </div>
       <div class="top-center">
-        <button class="icon-btn" onclick="goView('news')">${IMAGES.news_icon}</button>
-        <button class="icon-btn" onclick="goView('shop')">${IMAGES.shop_icon}</button>
+        <button class="icon-btn" onclick="goView('news')"><img src="${IMAGES.news_icon}"></button>
+        <button class="icon-btn" onclick="goView('shop')"><img src="${IMAGES.shop_icon}"></button>
         <button class="icon-btn" onclick="toggleTheme()">${progress.theme === 'dark' ? '☀️' : '🌙'}</button>
       </div>
       <div class="top-right">
@@ -280,7 +293,6 @@ function renderMap() {
         } else {
           cls += ' locked'; inner = `🔒`;
         }
-        // Показываем, сколько раз пройдено (до 3)
         const stars = count > 0 ? `<div style="font-size:10px;color:var(--gold-dark);margin-top:2px">${'★'.repeat(Math.min(count, 3))}</div>` : '';
         
         html += `<div class="lesson-item">
@@ -451,7 +463,7 @@ function completeLesson() {
     progress.xp += state.xpGained;
     progress.completed[key] = count + 1;
   } else {
-    state.xpGained = 0; // XP больше не начисляется
+    state.xpGained = 0;
   }
   
   saveProgress();
@@ -464,26 +476,23 @@ function renderResult() {
       <h1 style="color:var(--primary)">${t('failTitle')}</h1><p class="result-sub">${t('failSub')}</p>
       <button class="btn btn-primary" onclick="startLesson(${state.sectionIdx},${state.unitIdx},${state.lessonIdx})" style="margin-top:32px">${t('retry')}</button></div>`;
   }
-  const msg = state.xpGained > 0 ? `+${state.xpGained} XP` : "Практика пройдена! (XP больше не начисляется)";
+  const msg = state.xpGained > 0 ? `+${state.xpGained} XP` : "Практика пройдена!";
   return `<div class="result-screen"><img class="mascot" src="${EAGLE_IMG}">
     <h1>${t('unitDone')}</h1>
     <div class="result-stats"><div class="result-stat"><div class="result-stat-label">Опыт</div><div class="result-stat-value">${msg}</div></div></div>
     <button class="btn btn-primary" onclick="goView('map')" style="width:100%">${t('cont')}</button></div>`;
 }
 
-function bindResult() {
-  // Кнопки привязаны через onclick в renderResult
-}
+function bindResult() {}
 
-/* ══════════════════ НОВОСТИ И МАГАЗИН ══════════════════ */
 function renderNews() {
   let html = renderTopBar() + `<div class="page-screen"><div class="page-title">Новости Польши</div>`;
   const news = NEWS_DATA[state.lang] || NEWS_DATA['ru'];
   news.forEach(n => {
     html += `<div class="news-card">
       <div class="news-topic">${n.topic}</div>
-      <div class="news-title">${n.title} <button class="tts-btn" style="display:inline-flex;vertical-align:middle" onclick="speak('${n.title}')"><img src="${IMAGES.speaker}"></button></div>
-      <div class="news-text">${n.text} <button class="tts-btn" style="display:inline-flex;vertical-align:middle" onclick="speak('${n.text}')"><img src="${IMAGES.speaker}"></button></div>
+      <div class="news-title">${n.title} <button class="tts-btn" onclick="speak('${n.title}')"><img src="${IMAGES.speaker}"></button></div>
+      <div class="news-text">${n.text} <button class="tts-btn" onclick="speak('${n.text}')"><img src="${IMAGES.speaker}"></button></div>
       <div class="news-trans">${n.trans}</div>
     </div>`;
   });
@@ -508,7 +517,7 @@ function renderShop() {
   return html + `</div></div>`;
 }
 
-function bindShop() { /* Используем onclick в HTML */ }
+function bindShop() {}
 
 function buy(id) {
   const item = SHOP_ITEMS.find(i => i.id === id);
@@ -522,11 +531,9 @@ function equip(id) {
   saveProgress(); goView('shop');
 }
 
-/* ══════════════════ ГЛОБАЛЬНЫЕ ФУНКЦИИ ══════════════════ */
 function goView(view) { state.view = view; render(); }
 function toggleTheme() { progress.theme = progress.theme === 'dark' ? 'light' : 'dark'; saveProgress(); render(); }
 
-// Инициализация
 checkStreak();
 render();
 </script>
