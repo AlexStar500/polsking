@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Polsking — учи польский бесплатно</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', system-ui, sans-serif; background: #f7f7f7; color: #4b4b4b; min-height: 100vh; -webkit-font-smoothing: antialiased; }
+.app { max-width: 600px; margin: 0 auto; min-height: 100vh; background: #fff; box-shadow: 0 0 40px rgba(0,0,0,0.05); }
+button { font-family: inherit; }
+
+/* ── язык ── */
+.lang-screen { padding: 40px 24px; text-align: center; }
+.mascot { width: 160px; height: 160px; margin: 16px auto 24px; display: block; }
+.brand { font-size: 40px; font-weight: 900; color: #c8102e; letter-spacing: -1px; }
+.brand-sub { color: #888; margin-top: 6px; font-weight: 600; }
+.lang-options { display: flex; flex-direction: column; gap: 12px; max-width: 340px; margin: 32px auto 16px; }
+.lang-btn { display: flex; align-items: center; gap: 14px; padding: 14px 18px; border: 2px solid #e5e5e5; background: #fff; border-radius: 16px; font-weight: 700; font-size: 15px; cursor: pointer; box-shadow: 0 4px 0 #e5e5e5; color: #3c3c3c; }
+.lang-btn:hover { background: #fafafa; }
+.lang-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #e5e5e5; }
+.lang-btn img { width: 38px; }
+
+/* ── топ-бар ── */
+.top-bar { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 2px solid #eee; position: sticky; top: 0; background: #fff; z-index: 10; }
+.brand-small { display: flex; align-items: center; gap: 8px; font-weight: 900; color: #c8102e; font-size: 18px; }
+.top-stats { display: flex; gap: 16px; }
+.stat { display: flex; align-items: center; gap: 5px; font-weight: 800; color: #888; font-size: 15px; }
+.stat img { width: 22px; height: 22px; }
+
+/* ── карта ── */
+.map-screen { padding: 20px; }
+.unit-header { background: linear-gradient(135deg, #c8102e 0%, #a00d25 100%); color: #fff; padding: 16px 22px; border-radius: 18px; margin: 22px 0 8px; font-weight: 900; font-size: 18px; box-shadow: 0 4px 0 #8b0a1f; }
+.unit-header small { display: block; font-weight: 700; opacity: 0.8; font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 3px; }
+.lessons-path { display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 16px 0 24px; }
+.lesson-item { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.lesson-item:nth-child(4n+1) { transform: translateX(-40px); }
+.lesson-item:nth-child(4n+3) { transform: translateX(40px); }
+.lesson-btn { width: 78px; height: 78px; border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 0 rgba(0,0,0,0.18); transition: transform 0.1s; }
+.lesson-btn:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 3px 0 rgba(0,0,0,0.18); }
+.lesson-btn.locked { background: #ececec; box-shadow: 0 6px 0 #d4d4d4; cursor: not-allowed; }
+.lesson-btn.available { background: #c8102e; color: #fff; }
+.lesson-btn.completed { background: #ffc800; box-shadow: 0 6px 0 #d1a200; }
+.lesson-btn svg, .lesson-btn img { width: 34px; height: 34px; }
+.lesson-label { font-size: 12px; font-weight: 800; color: #999; text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* ── урок ── */
+.lesson-screen { padding: 18px 20px; min-height: 100vh; display: flex; flex-direction: column; }
+.lesson-top { display: flex; align-items: center; gap: 14px; margin-bottom: 26px; }
+.progress-bar { flex: 1; height: 16px; background: #eee; border-radius: 8px; overflow: hidden; }
+.progress-fill { height: 100%; background: #ffc800; transition: width 0.35s; border-radius: 8px; }
+.close-btn { background: none; border: none; font-size: 26px; cursor: pointer; color: #bdbdbd; padding: 0 8px; }
+.close-btn:hover { color: #888; }
+.lesson-content { flex: 1; }
+.prompt-label { font-size: 12px; text-transform: uppercase; color: #999; font-weight: 800; letter-spacing: 1.2px; margin-bottom: 12px; }
+.prompt { font-size: 26px; font-weight: 900; margin-bottom: 12px; color: #3c3c3c; }
+
+.options { display: flex; flex-direction: column; gap: 12px; margin: 20px 0; }
+.option-btn { padding: 16px 20px; border: 2px solid #e5e5e5; background: #fff; border-radius: 14px; text-align: left; font-size: 16px; font-weight: 700; cursor: pointer; box-shadow: 0 3px 0 #e5e5e5; color: #3c3c3c; transition: transform 0.08s; }
+.option-btn:hover:not(:disabled) { background: #fafafa; }
+.option-btn:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 1px 0 #e5e5e5; }
+.option-btn.selected { border-color: #c8102e; background: #fff5f7; color: #c8102e; box-shadow: 0 3px 0 #c8102e; }
+.option-btn.correct { border-color: #58cc02; background: #ebffdc; color: #4aa800; box-shadow: 0 3px 0 #58cc02; }
+.option-btn.wrong { border-color: #ff4b4b; background: #ffecec; color: #d03030; box-shadow: 0 3px 0 #ff4b4b; }
+
+.translate-area { min-height: 90px; border-bottom: 2px solid #e5e5e5; padding: 10px 0; display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+.translate-area .placeholder { color: #ccc; font-weight: 600; padding: 8px 0; }
+.bank { display: flex; flex-wrap: wrap; gap: 8px; }
+.word-btn { padding: 10px 16px; border: 2px solid #e5e5e5; background: #fff; border-radius: 12px; font-weight: 700; font-size: 16px; cursor: pointer; box-shadow: 0 3px 0 #e5e5e5; color: #3c3c3c; }
+.word-btn:hover:not(:disabled) { background: #fafafa; }
+.word-btn:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 1px 0 #e5e5e5; }
+.word-btn.used { opacity: 0.25; pointer-events: none; box-shadow: none; }
+.word-btn.in-answer { border-color: #c8102e; color: #c8102e; background: #fff5f7; box-shadow: 0 3px 0 #c8102e; }
+
+/* ── футер-фидбек ── */
+.feedback { padding: 18px 20px; border-top: 2px solid #e5e5e5; background: #fff; position: sticky; bottom: 0; margin: 20px -20px -18px; }
+.feedback.correct-bg { background: #d7ffb8; border-top-color: #58cc02; }
+.feedback.wrong-bg { background: #ffdfe0; border-top-color: #ff4b4b; }
+.feedback-msg { font-weight: 900; font-size: 20px; margin-bottom: 8px; }
+.feedback-msg.correct { color: #4aa800; }
+.feedback-msg.wrong { color: #d03030; }
+.feedback-answer { color: #666; margin-bottom: 14px; font-size: 15px; font-weight: 600; }
+.feedback-answer b { color: #3c3c3c; }
+.btn { padding: 14px 24px; border-radius: 14px; border: none; font-weight: 900; font-size: 15px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: transform 0.08s; }
+.btn:active:not(:disabled) { transform: translateY(2px); }
+.btn[disabled] { opacity: 0.45; cursor: not-allowed; }
+.btn-primary { background: #c8102e; color: #fff; box-shadow: 0 4px 0 #8b0a1f; }
+.btn-primary:active:not(:disabled) { box-shadow: 0 2px 0 #8b0a1f; }
+.btn-secondary { background: #fff; color: #c8102e; border: 2px solid #e5e5e5; box-shadow: 0 4px 0 #e5e5e5; }
+.btn-check { width: 100%; }
+
+/* ── результат ── */
+.result-screen { padding: 48px 24px; text-align: center; }
+.result-screen h1 { font-size: 30px; color: #ffc800; margin: 8px 0 16px; }
+.result-screen.fail h1 { color: #c8102e; }
+.result-sub { color: #888; font-weight: 600; }
+.result-stats { display: flex; justify-content: center; gap: 20px; margin: 28px 0; }
+.result-stat { flex: 1; max-width: 130px; padding: 18px 10px; border-radius: 16px; background: #f7f7f7; border: 2px solid #ffc800; }
+.result-stat-label { font-size: 11px; color: #999; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+.result-stat-value { font-size: 26px; font-weight: 900; color: #ffa800; }
+</style>
+</head>
+<body>
+<div id="app" class="app"></div>
+<script>
+const IMAGES = {"eagle": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAyMDAgMjAwJz4gPGNpcmNsZSBjeD0nMTAwJyBjeT0nMTE1JyByPSc3MicgZmlsbD0nI2ZmZicgc3Ryb2tlPScjYzgxMDJlJyBzdHJva2Utd2lkdGg9JzUnLz4gPHBhdGggZD0nTSA1NSA2MiBMIDY4IDI4IEwgODQgNTAgTCAxMDAgMjAgTCAxMTYgNTAgTCAxMzIgMjggTCAxNDUgNjIgWicgZmlsbD0nI2Y1Yzg0Micgc3Ryb2tlPScjYzgxMDJlJyBzdHJva2Utd2lkdGg9JzMuNScgc3Ryb2tlLWxpbmVqb2luPSdyb3VuZCcvPiA8ZWxsaXBzZSBjeD0nNzgnIGN5PScxMDUnIHJ4PScxMCcgcnk9JzEyJyBmaWxsPScjMWExYTFhJy8+IDxlbGxpcHNlIGN4PScxMjInIGN5PScxMDUnIHJ4PScxMCcgcnk9JzEyJyBmaWxsPScjMWExYTFhJy8+IDxjaXJjbGUgY3g9JzgxJyBjeT0nMTAxJyByPSczLjUnIGZpbGw9JyNmZmYnLz4gPGNpcmNsZSBjeD0nMTI1JyBjeT0nMTAxJyByPSczLjUnIGZpbGw9JyNmZmYnLz4gPHBhdGggZD0nTSA4NiAxMjggTCAxMDAgMTU4IEwgMTE0IDEyOCBaJyBmaWxsPScjZjVjODQyJyBzdHJva2U9JyNjODEwMmUnIHN0cm9rZS13aWR0aD0nMycgc3Ryb2tlLWxpbmVqb2luPSdyb3VuZCcvPiA8Y2lyY2xlIGN4PSc1OCcgY3k9JzEyNScgcj0nOScgZmlsbD0nI2ZmYjNiMycgb3BhY2l0eT0nMC41NScvPiA8Y2lyY2xlIGN4PScxNDInIGN5PScxMjUnIHI9JzknIGZpbGw9JyNmZmIzYjMnIG9wYWNpdHk9JzAuNTUnLz4gPC9zdmc+", "heart": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAyNCAyNCc+IDxwYXRoIGQ9J00xMiAyMS4zNWwtMS40NS0xLjMyQzUuNCAxNS4zNiAyIDEyLjI4IDIgOC41IDIgNS40MiA0LjQyIDMgNy41IDNjMS43NCAwIDMuNDEuODEgNC41IDIuMDlDMTMuMDkgMy44MSAxNC43NiAzIDE2LjUgMyAxOS41OCAzIDIyIDUuNDIgMjIgOC41YzAgMy43OC0zLjQgNi44Ni04LjU1IDExLjU0TDEyIDIxLjM1eicgZmlsbD0nI2ZmNGI0YicvPiA8L3N2Zz4=", "star": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAyNCAyNCc+IDxwYXRoIGQ9J00xMiAybDIuOSA2LjkgNy4xLjYtNS40IDQuNyAxLjcgNy4yTDEyIDE3LjNsLTYuMyA0LjEgMS43LTcuMkwyIDkuNWw3LjEtLjZ6JyBmaWxsPScjZmZjODAwJy8+IDwvc3ZnPg==", "flame": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAyNCAyNCc+IDxwYXRoIGQ9J00xMyAyYzAgNC01IDUtNSAxMGE0IDQgMCAwIDAgOCAwYzAtMy0yLTQtMy02IC45IDAgMi0uOSAyLTItMSAuOS0yIC45LTIgLjl6JyBmaWxsPScjZmY5NjAwJy8+IDwvc3ZnPg==", "check": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAyNCAyNCc+IDxwYXRoIGQ9J000IDEybDUgNUwyMCA2JyBmaWxsPSdub25lJyBzdHJva2U9JyNmZmYnIHN0cm9rZS13aWR0aD0nMy41JyBzdHJva2UtbGluZWNhcD0ncm91bmQnIHN0cm9rZS1saW5lam9pbj0ncm91bmQnLz4gPC9zdmc+", "lock": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAyNCAyNCc+IDxyZWN0IHg9JzUnIHk9JzExJyB3aWR0aD0nMTQnIGhlaWdodD0nMTAnIHJ4PScyJyBmaWxsPScjYWZhZmFmJy8+IDxwYXRoIGQ9J004IDExVjhhNCA0IDAgMCAxIDggMHYzJyBmaWxsPSdub25lJyBzdHJva2U9JyNhZmFmYWYnIHN0cm9rZS13aWR0aD0nMi41Jy8+IDwvc3ZnPg==", "flag_pl": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA2MCA0MCc+IDxkZWZzPjxjbGlwUGF0aCBpZD0ncCc+PHJlY3Qgd2lkdGg9JzYwJyBoZWlnaHQ9JzQwJyByeD0nNCcvPjwvY2xpcFBhdGg+PC9kZWZzPiA8ZyBjbGlwLXBhdGg9J3VybCgjcCknPiA8cmVjdCB3aWR0aD0nNjAnIGhlaWdodD0nMjAnIGZpbGw9JyNmZmYnLz4gPHJlY3QgeT0nMjAnIHdpZHRoPSc2MCcgaGVpZ2h0PScyMCcgZmlsbD0nI2RjMTQzYycvPiA8L2c+IDwvc3ZnPg==", "flag_ru": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA2MCA0MCc+IDxkZWZzPjxjbGlwUGF0aCBpZD0ncic+PHJlY3Qgd2lkdGg9JzYwJyBoZWlnaHQ9JzQwJyByeD0nNCcvPjwvY2xpcFBhdGg+PC9kZWZzPiA8ZyBjbGlwLXBhdGg9J3VybCgjciknPiA8cmVjdCB3aWR0aD0nNjAnIGhlaWdodD0nMTMuMzMnIGZpbGw9JyNmZmYnLz4gPHJlY3QgeT0nMTMuMzMnIHdpZHRoPSc2MCcgaGVpZ2h0PScxMy4zNCcgZmlsbD0nIzAwMzlhNicvPiA8cmVjdCB5PScyNi42Nycgd2lkdGg9JzYwJyBoZWlnaHQ9JzEzLjMzJyBmaWxsPScjZDUyYjFlJy8+IDwvZz4gPC9zdmc+", "flag_gb": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA2MCA0MCc+IDxkZWZzPjxjbGlwUGF0aCBpZD0nZyc+PHJlY3Qgd2lkdGg9JzYwJyBoZWlnaHQ9JzQwJyByeD0nNCcvPjwvY2xpcFBhdGg+PC9kZWZzPiA8ZyBjbGlwLXBhdGg9J3VybCgjZyknPiA8cmVjdCB3aWR0aD0nNjAnIGhlaWdodD0nNDAnIGZpbGw9JyMwMTIxNjknLz4gPHBhdGggZD0nTTAgMEw2MCA0ME02MCAwTDAgNDAnIHN0cm9rZT0nI2ZmZicgc3Ryb2tlLXdpZHRoPSc4Jy8+IDxwYXRoIGQ9J00wIDBMNjAgNDBNNjAgMEwwIDQwJyBzdHJva2U9JyNjODEwMmUnIHN0cm9rZS13aWR0aD0nMycvPiA8cGF0aCBkPSdNMzAgMFY0ME0wIDIwSDYwJyBzdHJva2U9JyNmZmYnIHN0cm9rZS13aWR0aD0nMTQnLz4gPHBhdGggZD0nTTMwIDBWNDBNMCAyMEg2MCcgc3Ryb2tlPScjYzgxMDJlJyBzdHJva2Utd2lkdGg9JzcnLz4gPC9nPiA8L3N2Zz4="};
+const COURSES = {"ru": {"units": [{"title": "Основы", "lessons": [{"title": "Приветствия", "exercises": [{"type": "choice", "prompt": "Cześć", "answer": "Привет", "options": ["Привет", "Пока", "Спасибо"]}, {"type": "choice", "prompt": "Do widzenia", "answer": "До свидания", "options": ["До свидания", "Доброе утро", "Извините"]}, {"type": "translate", "prompt": "Доброе утро", "answer": "Dzień dobry", "bank": ["Dzień", "dobry", "Cześć", "do"]}, {"type": "choice", "prompt": "Dobranoc", "answer": "Спокойной ночи", "options": ["Спокойной ночи", "Добрый день", "Привет"]}]}, {"title": "Да и нет", "exercises": [{"type": "choice", "prompt": "Tak", "answer": "Да", "options": ["Да", "Нет", "Может"]}, {"type": "choice", "prompt": "Nie", "answer": "Нет", "options": ["Нет", "Да", "Пожалуйста"]}, {"type": "translate", "prompt": "Да, спасибо", "answer": "Tak, dziękuję", "bank": ["Tak", "dziękuję", "proszę", "nie"]}, {"type": "translate", "prompt": "Нет, пожалуйста", "answer": "Nie, proszę", "bank": ["Nie", "proszę", "tak", "dziękuję"]}]}]}, {"title": "Люди", "lessons": [{"title": "Местоимения", "exercises": [{"type": "choice", "prompt": "ja", "answer": "я", "options": ["я", "ты", "он"]}, {"type": "choice", "prompt": "ty", "answer": "ты", "options": ["ты", "я", "она"]}, {"type": "choice", "prompt": "on", "answer": "он", "options": ["он", "она", "они"]}, {"type": "choice", "prompt": "ona", "answer": "она", "options": ["она", "он", "мы"]}]}, {"title": "Знакомство", "exercises": [{"type": "choice", "prompt": "Nazywam się", "answer": "Меня зовут", "options": ["Меня зовут", "Как дела", "До свидания"]}, {"type": "translate", "prompt": "Меня зовут Анна", "answer": "Nazywam się Anna", "bank": ["Nazywam", "się", "Anna", "jestem"]}, {"type": "translate", "prompt": "Как тебя зовут?", "answer": "Jak się nazywasz?", "bank": ["Jak", "się", "nazywasz", "ty"]}, {"type": "choice", "prompt": "Miło mi", "answer": "Приятно познакомиться", "options": ["Приятно познакомиться", "Добро пожаловать", "Спокойной ночи"]}]}]}, {"title": "Еда", "lessons": [{"title": "Основные продукты", "exercises": [{"type": "choice", "prompt": "woda", "answer": "вода", "options": ["вода", "молоко", "хлеб"]}, {"type": "choice", "prompt": "chleb", "answer": "хлеб", "options": ["хлеб", "вода", "сыр"]}, {"type": "choice", "prompt": "mleko", "answer": "молоко", "options": ["молоко", "вода", "мясо"]}, {"type": "translate", "prompt": "вода и хлеб", "answer": "woda i chleb", "bank": ["woda", "i", "chleb", "mleko"]}]}, {"title": "Действия", "exercises": [{"type": "choice", "prompt": "jeść", "answer": "есть", "options": ["есть", "пить", "спать"]}, {"type": "choice", "prompt": "pić", "answer": "пить", "options": ["пить", "есть", "идти"]}, {"type": "translate", "prompt": "есть и пить", "answer": "jeść i pić", "bank": ["jeść", "i", "pić", "spać"]}, {"type": "translate", "prompt": "Я пью воду", "answer": "Piję wodę", "bank": ["Piję", "wodę", "woda", "jem"]}]}]}]}, "en": {"units": [{"title": "Basics", "lessons": [{"title": "Greetings", "exercises": [{"type": "choice", "prompt": "Cześć", "answer": "Hello", "options": ["Hello", "Bye", "Thanks"]}, {"type": "choice", "prompt": "Do widzenia", "answer": "Goodbye", "options": ["Goodbye", "Good morning", "Sorry"]}, {"type": "translate", "prompt": "Good morning", "answer": "Dzień dobry", "bank": ["Dzień", "dobry", "Cześć", "do"]}, {"type": "choice", "prompt": "Dobranoc", "answer": "Good night", "options": ["Good night", "Good day", "Hello"]}]}, {"title": "Yes & No", "exercises": [{"type": "choice", "prompt": "Tak", "answer": "Yes", "options": ["Yes", "No", "Maybe"]}, {"type": "choice", "prompt": "Nie", "answer": "No", "options": ["No", "Yes", "Please"]}, {"type": "translate", "prompt": "Yes, thank you", "answer": "Tak, dziękuję", "bank": ["Tak", "dziękuję", "proszę", "nie"]}, {"type": "translate", "prompt": "No, please", "answer": "Nie, proszę", "bank": ["Nie", "proszę", "tak", "dziękuję"]}]}]}, {"title": "People", "lessons": [{"title": "Pronouns", "exercises": [{"type": "choice", "prompt": "ja", "answer": "I", "options": ["I", "you", "he"]}, {"type": "choice", "prompt": "ty", "answer": "you", "options": ["you", "I", "she"]}, {"type": "choice", "prompt": "on", "answer": "he", "options": ["he", "she", "they"]}, {"type": "choice", "prompt": "ona", "answer": "she", "options": ["she", "he", "we"]}]}, {"title": "Introductions", "exercises": [{"type": "choice", "prompt": "Nazywam się", "answer": "My name is", "options": ["My name is", "How are you", "Goodbye"]}, {"type": "translate", "prompt": "My name is Anna", "answer": "Nazywam się Anna", "bank": ["Nazywam", "się", "Anna", "jestem"]}, {"type": "translate", "prompt": "What is your name?", "answer": "Jak się nazywasz?", "bank": ["Jak", "się", "nazywasz", "ty"]}, {"type": "choice", "prompt": "Miło mi", "answer": "Nice to meet you", "options": ["Nice to meet you", "Welcome", "Good night"]}]}]}, {"title": "Food", "lessons": [{"title": "Basic food", "exercises": [{"type": "choice", "prompt": "woda", "answer": "water", "options": ["water", "milk", "bread"]}, {"type": "choice", "prompt": "chleb", "answer": "bread", "options": ["bread", "water", "cheese"]}, {"type": "choice", "prompt": "mleko", "answer": "milk", "options": ["milk", "water", "meat"]}, {"type": "translate", "prompt": "water and bread", "answer": "woda i chleb", "bank": ["woda", "i", "chleb", "mleko"]}]}, {"title": "Actions", "exercises": [{"type": "choice", "prompt": "jeść", "answer": "to eat", "options": ["to eat", "to drink", "to sleep"]}, {"type": "choice", "prompt": "pić", "answer": "to drink", "options": ["to drink", "to eat", "to go"]}, {"type": "translate", "prompt": "to eat and to drink", "answer": "jeść i pić", "bank": ["jeść", "i", "pić", "spać"]}, {"type": "translate", "prompt": "I drink water", "answer": "Piję wodę", "bank": ["Piję", "wodę", "woda", "jem"]}]}]}]}};
+
+const DEFAULT = { xp: 0, completed: {}, lang: null };
+let progress;
+try { progress = Object.assign({}, DEFAULT, JSON.parse(localStorage.getItem('polsking') || '{}')); }
+catch(e) { progress = Object.assign({}, DEFAULT); }
+
+const state = {
+  lang: null, view: 'lang',
+  unitIdx: 0, lessonIdx: 0,
+  exercises: [], exIdx: 0,
+  hearts: 5, lessonXp: 0, xpGained: 0, failed: false,
+  selected: null, answer: [], result: null
+};
+
+const T = {
+  ru: {
+    chooseTranslation: 'Выбери перевод',
+    translateTo: 'Переведи на польский',
+    check: 'Проверить', cont: 'Продолжить', retry: 'Повторить',
+    correct: 'Отлично!', wrong: 'Ошибка',
+    correctAnswer: 'Правильный ответ:', placeholder: 'Напиши здесь',
+    unit: 'Блок', unitDone: 'Урок пройден!',
+    xp: 'Опыт', exercises: 'Задания',
+    failTitle: 'Не сдавайся!', failSub: 'Попробуй ещё раз',
+    continueSaved: 'Продолжить обучение',
+    brandSub: 'Учи польский бесплатно и весело'
+  },
+  en: {
+    chooseTranslation: 'Choose the translation',
+    translateTo: 'Translate to Polish',
+    check: 'Check', cont: 'Continue', retry: 'Retry',
+    correct: 'Great!', wrong: 'Wrong',
+    correctAnswer: 'Correct answer:', placeholder: 'Type here',
+    unit: 'Unit', unitDone: 'Lesson complete!',
+    xp: 'XP', exercises: 'Exercises',
+    failTitle: 'Keep trying!', failSub: 'Try again',
+    continueSaved: 'Continue learning',
+    brandSub: 'Learn Polish for free'
+  }
+};
+function t(k) { return T[state.lang || 'ru'][k]; }
+
+function saveProgress() { localStorage.setItem('polsking', JSON.stringify(progress)); }
+function norm(s) { return s.toLowerCase().replace(/[.,!?;:'"„”«»()]/g, '').replace(/\s+/g, ' ').trim(); }
+
+/* ══════════════════ РЕНДЕР ══════════════════ */
+function render() {
+  const el = document.getElementById('app');
+  if (state.view === 'lang')   { el.innerHTML = renderLang(); bindLang(); }
+  else if (state.view === 'map')    { el.innerHTML = renderMap(); bindMap(); }
+  else if (state.view === 'lesson') { el.innerHTML = renderLesson(); bindLesson(); }
+  else if (state.view === 'result') { el.innerHTML = renderResult(); bindResult(); }
+}
+
+function renderLang() {
+  return `
+    <div class="lang-screen">
+      <img class="mascot" src="${IMAGES.eagle}" alt="Polsking">
+      <h1 class="brand">Polsking</h1>
+      <p class="brand-sub">Учи польский · Learn Polish</p>
+      <div class="lang-options">
+        <button class="lang-btn" data-lang="ru">
+          <img src="${IMAGES.flag_ru}" alt="">
+          <span>Я говорю по-русски</span>
+        </button>
+        <button class="lang-btn" data-lang="en">
+          <img src="${IMAGES.flag_gb}" alt="">
+          <span>I speak English</span>
+        </button>
+      </div>
+      ${progress.lang ? `<button class="btn btn-secondary" data-action="continue-saved">${T[progress.lang].continueSaved}</button>` : ''}
+    </div>
+  `;
+}
+function bindLang() {
+  document.querySelectorAll('.lang-btn').forEach(b => b.onclick = () => {
+    state.lang = b.dataset.lang;
+    progress.lang = state.lang;
+    saveProgress();
+    state.view = 'map';
+    render();
+  });
+  const c = document.querySelector('[data-action="continue-saved"]');
+  if (c) c.onclick = () => { state.lang = progress.lang; state.view = 'map'; render(); };
+}
+
+function renderMap() {
+  const course = COURSES[state.lang];
+  let html = `<div class="map-screen">`;
+  html += `
+    <div class="top-bar">
+      <div class="brand-small">
+        <img src="${IMAGES.eagle}" style="width:30px;height:30px">
+        Polsking
+      </div>
+      <div class="top-stats">
+        <div class="stat"><img src="${IMAGES.star}">${progress.xp}</div>
+      </div>
+    </div>`;
+  course.units.forEach((unit, ui) => {
+    html += `<div class="unit-header"><small>${t('unit')} ${ui + 1}</small>${unit.title}</div>`;
+    html += `<div class="lessons-path">`;
+    unit.lessons.forEach((lesson, li) => {
+      const key = state.lang + '_' + ui + '-' + li;
+      const completed = !!progress.completed[key];
+      const unlocked = isUnlocked(ui, li);
+      const cls = completed ? 'completed' : (unlocked ? 'available' : 'locked');
+      let inner;
+      if (completed) inner = `<img src="${IMAGES.check}" alt="">`;
+      else if (unlocked) inner = `<span style="font-size:30px;color:#fff;font-weight:900">▶</span>`;
+      else inner = `<img src="${IMAGES.lock}" alt="">`;
+      html += `
+        <div class="lesson-item">
+          <button class="lesson-btn ${cls}" data-u="${ui}" data-l="${li}" ${unlocked ? '' : 'disabled'}>${inner}</button>
+          <div class="lesson-label">${lesson.title}</div>
+        </div>`;
+    });
+    html += `</div>`;
+  });
+  html += `</div>`;
+  return html;
+}
+function isUnlocked(ui, li) {
+  if (ui === 0 && li === 0) return true;
+  const key = (u, l) => state.lang + '_' + u + '-' + l;
+  if (li > 0) return !!progress.completed[key(ui, li - 1)];
+  const prev = COURSES[state.lang].units[ui - 1];
+  return prev.lessons.every((_, i) => !!progress.completed[key(ui - 1, i)]);
+}
+function bindMap() {
+  document.querySelectorAll('.lesson-btn[data-u]').forEach(b => {
+    if (b.disabled) return;
+    b.onclick = () => startLesson(+b.dataset.u, +b.dataset.l);
+  });
+}
+
+function startLesson(ui, li) {
+  state.unitIdx = ui; state.lessonIdx = li;
+  state.exercises = COURSES[state.lang].units[ui].lessons[li].exercises;
+  state.exIdx = 0; state.hearts = 5; state.lessonXp = 0; state.xpGained = 0;
+  state.failed = false; state.selected = null; state.answer = []; state.result = null;
+  state.view = 'lesson';
+  render();
+}
+
+function renderLesson() {
+  const ex = state.exercises[state.exIdx];
+  const pct = (state.exIdx / state.exercises.length) * 100;
+  const body = ex.type === 'choice' ? renderChoice(ex) : renderTranslate(ex);
+  return `
+    <div class="lesson-screen">
+      <div class="lesson-top">
+        <button class="close-btn" data-action="quit">✕</button>
+        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+        <div class="stat"><img src="${IMAGES.heart}" style="width:22px;height:22px"> ${state.hearts}</div>
+      </div>
+      <div class="lesson-content">${body}</div>
+      ${renderFooter(ex)}
+    </div>
+  `;
+}
+
+function renderChoice(ex) {
+  const r = state.result, sel = state.selected;
+  const opts = ex.options.map((o, i) => {
+    let cls = 'option-btn';
+    if (r) {
+      if (o === ex.answer) cls += ' correct';
+      else if (i === sel) cls += ' wrong';
+    } else if (i === sel) cls += ' selected';
+    return `<button class="${cls}" data-opt="${i}" ${r ? 'disabled' : ''}>${o}</button>`;
+  }).join('');
+  return `
+    <div class="prompt-label">${t('chooseTranslation')}</div>
+    <div class="prompt">${ex.prompt}</div>
+    <div class="options">${opts}</div>`;
+}
+
+function renderTranslate(ex) {
+  const r = state.result;
+  const bank = ex.bank || ex.answer.split(' ');
+  const ans = state.answer || [];
+  const used = new Set(ans.map(a => a.i));
+  const answerHtml = ans.length === 0
+    ? `<span class="placeholder">${t('placeholder')}</span>`
+    : ans.map((a, ai) =>
+        `<button class="word-btn in-answer" data-ans="${ai}" ${r ? 'disabled' : ''}>${a.w}</button>`
+      ).join('');
+  const bankHtml = bank.map((w, i) =>
+    `<button class="word-btn ${used.has(i) ? 'used' : ''}" data-bank="${i}" ${r ? 'disabled' : ''}>${w}</button>`
+  ).join('');
+  return `
+    <div class="prompt-label">${t('translateTo')}</div>
+    <div class="prompt">${ex.prompt}</div>
+    <div class="translate-area">${answerHtml}</div>
+    <div class="bank">${bankHtml}</div>`;
+}
+
+function renderFooter(ex) {
+  const r = state.result;
+  if (r) {
+    const ok = r === 'correct';
+    let ansText = '';
+    if (!ok) ansText = `<div class="feedback-answer">${t('correctAnswer')} <b>${ex.answer}</b></div>`;
+    const msg = ok ? t('correct') : t('wrong');
+    const failCase = !ok && state.hearts <= 0;
+    const btn = failCase ? t('retry') : t('cont');
+    const action = failCase ? 'fail' : 'cont';
+    return `
+      <div class="feedback ${ok ? 'correct-bg' : 'wrong-bg'}">
+        <div class="feedback-msg ${ok ? 'correct' : 'wrong'}">${msg}</div>
+        ${ansText}
+        <button class="btn btn-primary btn-check" data-action="${action}">${btn}</button>
+      </div>`;
+  }
+  const canCheck = ex.type === 'choice'
+    ? state.selected !== null
+    : (state.answer || []).length > 0;
+  return `
+    <div class="feedback">
+      <button class="btn btn-primary btn-check" data-action="check" ${canCheck ? '' : 'disabled'}>${t('check')}</button>
+    </div>`;
+}
+
+function bindLesson() {
+  const quit = document.querySelector('[data-action="quit"]');
+  if (quit) quit.onclick = () => { state.view = 'map'; render(); };
+
+  document.querySelectorAll('[data-opt]').forEach(b => b.onclick = () => {
+    if (state.result) return;
+    state.selected = +b.dataset.opt; render();
+  });
+
+  document.querySelectorAll('[data-bank]').forEach(b => b.onclick = () => {
+    if (state.result) return;
+    const ex = state.exercises[state.exIdx];
+    const bank = ex.bank || ex.answer.split(' ');
+    const i = +b.dataset.bank;
+    if ((state.answer || []).some(a => a.i === i)) return;
+    state.answer = state.answer || [];
+    state.answer.push({ w: bank[i], i });
+    render();
+  });
+
+  document.querySelectorAll('[data-ans]').forEach(b => b.onclick = () => {
+    if (state.result) return;
+    state.answer.splice(+b.dataset.ans, 1);
+    render();
+  });
+
+  const check = document.querySelector('[data-action="check"]');
+  if (check) check.onclick = checkAnswer;
+  const cont = document.querySelector('[data-action="cont"]');
+  if (cont) cont.onclick = nextOrFail;
+  const fail = document.querySelector('[data-action="fail"]');
+  if (fail) fail.onclick = () => { state.failed = true; state.view = 'result'; render(); };
+}
+
+function checkAnswer() {
+  const ex = state.exercises[state.exIdx];
+  let ok = false;
+  if (ex.type === 'choice') {
+    ok = ex.options[state.selected] === ex.answer;
+  } else {
+    ok = norm((state.answer || []).map(a => a.w).join(' ')) === norm(ex.answer);
+  }
+  state.result = ok ? 'correct' : 'wrong';
+  if (ok) state.lessonXp += 10;
+  else state.hearts--;
+  render();
+}
+
+function nextOrFail() {
+  if (state.hearts <= 0) {
+    state.failed = true;
+    state.view = 'result';
+    render();
+    return;
+  }
+  state.exIdx++;
+  state.selected = null;
+  state.answer = [];
+  state.result = null;
+  if (state.exIdx >= state.exercises.length) completeLesson();
+  else render();
+}
+
+function completeLesson() {
+  const key = state.lang + '_' + state.unitIdx + '-' + state.lessonIdx;
+  const wasDone = !!progress.completed[key];
+  progress.completed[key] = true;
+  state.xpGained = state.lessonXp + (wasDone ? 0 : 20);
+  progress.xp = (progress.xp || 0) + state.xpGained;
+  saveProgress();
+  state.view = 'result';
+  state.failed = false;
+  render();
+}
+
+function renderResult() {
+  if (state.failed) {
+    return `
+      <div class="result-screen fail">
+        <img class="mascot" src="${IMAGES.eagle}" alt="">
+        <h1>${t('failTitle')}</h1>
+        <p class="result-sub">${t('failSub')}</p>
+        <button class="btn btn-primary" data-action="retry" style="width:100%;margin-top:32px">${t('retry')}</button>
+      </div>`;
+  }
+  return `
+    <div class="result-screen">
+      <img class="mascot" src="${IMAGES.eagle}" alt="">
+      <h1>${t('unitDone')}</h1>
+      <div class="result-stats">
+        <div class="result-stat">
+          <div class="result-stat-label">${t('xp')}</div>
+          <div class="result-stat-value">+${state.xpGained}</div>
+        </div>
+        <div class="result-stat">
+          <div class="result-stat-label">${t('exercises')}</div>
+          <div class="result-stat-value">${state.exercises.length}</div>
+        </div>
+      </div>
+      <button class="btn btn-primary" data-action="home" style="width:100%">${t('cont')}</button>
+    </div>`;
+}
+function bindResult() {
+  const home = document.querySelector('[data-action="home"]');
+  if (home) home.onclick = () => { state.view = 'map'; render(); };
+  const retry = document.querySelector('[data-action="retry"]');
+  if (retry) retry.onclick = () => startLesson(state.unitIdx, state.lessonIdx);
+}
+
+render();
+</script>
+</body>
+</html>
