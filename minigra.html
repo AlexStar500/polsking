@@ -34,8 +34,9 @@ button { font-family: inherit; }
 .stage { position: relative; flex: 1; min-height: 0; }
 #cv { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
 
-.overlay { position: absolute; inset: 0; z-index: 20; background: rgba(12,21,25,.94); display: flex; flex-direction: column; align-items: center; justify-content: center;
+.overlay { position: absolute; inset: 0; z-index: 20; background: rgba(12,21,25,.94); display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
   gap: 14px; padding: 24px; text-align: center; overflow-y: auto; }
+.overlay > :first-child { margin-top: auto; } .overlay > :last-child { margin-bottom: auto; }
 .hidden { display: none !important; }
 .overlay h1 { font-size: 32px; font-weight: 900; color: var(--red); letter-spacing: -.5px; }
 .overlay h2 { font-size: 30px; font-weight: 900; }
@@ -46,6 +47,11 @@ button { font-family: inherit; }
 .label { font-weight: 800; font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
 
 .chips { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; max-width: 300px; }
+.songs { display: flex; flex-direction: column; gap: 8px; width: 100%; max-width: 340px; max-height: 190px; overflow-y: auto; padding: 2px 4px 6px; }
+.song { display: flex; align-items: center; gap: 8px; text-align: left; padding: 10px 12px; border-radius: 14px; border: 2px solid var(--border); background: var(--panel); box-shadow: 0 3px 0 var(--border); color: var(--text); font-weight: 800; font-size: 15px; cursor: pointer; flex-shrink: 0; }
+.song span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.song.sel { border-color: var(--green); box-shadow: 0 3px 0 var(--green-d); background: #1e3311; }
+.song:active { transform: translateY(2px); }
 .chips.three { grid-template-columns: 1fr 1fr 1fr; max-width: 340px; }
 .chip { padding: 10px 8px; border-radius: 14px; border: 2px solid var(--border); background: var(--panel); box-shadow: 0 4px 0 var(--border); color: var(--text); cursor: pointer; font-weight: 900; font-size: 15px; line-height: 1.2; }
 .chip small { display: block; font-size: 11px; font-weight: 700; color: var(--muted); }
@@ -92,10 +98,12 @@ button { font-family: inherit; }
     <div class="big-emoji">🎵</div>
     <h1>Rytm Polsking</h1>
     <p class="sub">Naciskaj w rytm muzyki, gdy kółko dotknie okręgu na dole.</p>
+    <div class="label" id="songsLabel">Piosenka</div>
+    <div class="songs" id="songs"></div>
     <div class="status" id="status">Ładowanie muzyki…</div>
     <div class="file-pick hidden" id="filePick">
-      <label>midi.mid <input type="file" id="fMidi" accept=".mid,.midi,audio/midi"></label>
-      <label>midi.mp3 <input type="file" id="fMp3" accept=".mp3,audio/mpeg"></label>
+      <label>MIDI <input type="file" id="fMidi" accept=".mid,.midi,audio/midi"></label>
+      <label>Audio <input type="file" id="fMp3" accept=".wav,.mp3,audio/*"></label>
     </div>
     <div class="label">Nuty z pliku MIDI</div>
     <div class="chips three" id="srcs"></div>
@@ -137,8 +145,7 @@ button { font-family: inherit; }
 
 <script>
 // ====== USTAWIENIA ======
-const MIDI_FILE = 'midi.mid';
-const MP3_FILE  = 'midi.mp3';
+const SAMPLES_DIR = 'samples/';     // tu leżą pary: nazwa.mid + nazwa.wav
 const LEAD = 3;                       // sekundy odliczania przed startem
 const WIN = { perfect: 0.06, good: 0.115, ok: 0.17 };   // okna trafienia (sekundy)
 const DIFFS = [
@@ -254,6 +261,8 @@ const isTouch = matchMedia('(pointer: coarse)').matches;
 const songT = () => actx.currentTime - startAt - offsetMs / 1000;
 
 // ====== ŁADOWANIE ======
+let songs = [], curSong = null, noSongs = false;
+const cache = {};
 function ensureCtx() { if (!actx) { const AC = window.AudioContext || window.webkitAudioContext; actx = new AC(); } return actx; }
 async function loadMidiBuf(b) {
   const r = parseMidi(b);
@@ -262,29 +271,112 @@ async function loadMidiBuf(b) {
 }
 async function loadMp3Buf(b) { audioBuf = await ensureCtx().decodeAudioData(b.slice(0)); }
 
-async function autoload() {
-  const miss = [];
-  try { const r = await fetch(MIDI_FILE); if (!r.ok) throw 0; await loadMidiBuf(await r.arrayBuffer()); } catch (e) { miss.push(MIDI_FILE); }
-  try { const r = await fetch(MP3_FILE);  if (!r.ok) throw 0; await loadMp3Buf(await r.arrayBuffer()); } catch (e) { miss.push(MP3_FILE); }
-  checkReady(miss);
+const sampleUrl = (n, ext) => SAMPLES_DIR + encodeURIComponent(n) + ext;
+async function fetchFirst(urls) {
+  for (const u of urls) { try { const r = await fetch(u); if (r.ok) return await r.arrayBuffer(); } catch (e) {} }
+  throw new Error('brak pliku ' + urls[0]);
 }
-function checkReady(miss) {
-  const st = $('status');
-  if (raw && audioBuf) {
-    const n = buildChart(DIFFS[diffIdx]).length, s = Math.round(audioBuf.duration);
-    st.className = 'status ok';
-    st.textContent = `✅ Gotowe! Długość ${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
-    $('filePick').classList.add('hidden');
-    $('startBtn').disabled = false;
-    renderDiffs();
-  } else {
-    st.className = 'status err';
-    st.textContent = `Nie udało się wczytać: ${(miss || []).join(', ') || 'pliki'}. Połóż je obok tego pliku (i otwórz stronę przez serwer) albo wybierz ręcznie:`;
-    $('filePick').classList.remove('hidden');
+const mkSong = (name, mid, aud) => ({ name,
+  mid: mid ? [SAMPLES_DIR + encodeURIComponent(mid)] : [sampleUrl(name, '.mid'), sampleUrl(name, '.midi')],
+  aud: aud ? [SAMPLES_DIR + encodeURIComponent(aud)] : [sampleUrl(name, '.wav'), sampleUrl(name, '.mp3')] });
+
+// pary nazwa.mid + nazwa.wav/mp3 z listy nazw plików
+function pairFiles(files) {
+  const by = {};
+  for (const f of files) {
+    const mm = f.match(/^(.+)\.(mid|midi|wav|mp3)$/i); if (!mm) continue;
+    const o = by[mm[1]] || (by[mm[1]] = {});
+    if (/^mid/i.test(mm[2])) o.mid = f; else if (!o.aud || /^wav$/i.test(mm[2])) o.aud = f;
   }
+  return Object.entries(by).filter(([n, o]) => o.mid && o.aud).map(([n, o]) => mkSong(n, o.mid, o.aud));
 }
-$('fMidi').onchange = async e => { const f = e.target.files[0]; if (!f) return; try { await loadMidiBuf(await f.arrayBuffer()); } catch (er) { raw = null; } if (raw && audioBuf) checkReady(); };
-$('fMp3').onchange  = async e => { const f = e.target.files[0]; if (!f) return; try { await loadMp3Buf(await f.arrayBuffer()); } catch (er) { audioBuf = null; } if (raw && audioBuf) checkReady(); };
+
+// lista piosenek: 1) samples/songs.json (opcjonalnie, ręcznie)  2) GitHub API (strony na github.io)  3) listing katalogu (np. python -m http.server)
+async function discoverSongs() {
+  let list = [];
+  try {
+    const r = await fetch(SAMPLES_DIR + 'songs.json', { cache: 'no-cache' });
+    if (r.ok) { const j = await r.json(); list = (Array.isArray(j) ? j : []).map(x => typeof x === 'string' ? x : x && x.name).filter(Boolean).map(n => mkSong(n)); }
+  } catch (e) {}
+  if (!list.length && /\.github\.io$/i.test(location.hostname)) {
+    try {
+      const owner = location.hostname.split('.')[0], seg = location.pathname.split('/').filter(Boolean);
+      const page = seg.length && /\.html?$/i.test(seg[seg.length - 1]) ? seg.pop() : null;
+      let repo, dir;
+      if (!seg.length) { repo = owner + '.github.io'; dir = ''; }
+      else { repo = seg[0]; dir = seg.slice(1).join('/'); dir = dir ? dir + '/' : ''; }
+      const r = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${dir}${SAMPLES_DIR.replace(/\/$/, '')}`);
+      if (r.ok) { const j = await r.json(); list = pairFiles(j.filter(x => x.type === 'file').map(x => x.name)); }
+    } catch (e) {}
+  }
+  if (!list.length) {
+    try {
+      const r = await fetch(SAMPLES_DIR);
+      if (r.ok) {
+        const html = await r.text(), files = [];
+        for (const m of html.matchAll(/href="([^"?#]+)"/gi)) { try { files.push(decodeURIComponent(m[1]).split('/').pop()); } catch (e) {} }
+        list = pairFiles(files);
+      }
+    } catch (e) {}
+  }
+  return list.sort((a, b) => a.name.localeCompare(b.name, 'pl'));
+}
+
+function setStatus(txt, cls) { const st = $('status'); st.className = 'status ' + (cls || ''); st.textContent = txt; }
+function renderSongs() {
+  const box = $('songs'); box.innerHTML = '';
+  $('songsLabel').classList.toggle('hidden', !songs.length || (noSongs && !raw));
+  box.classList.toggle('hidden', !songs.length || (noSongs && !raw));
+  songs.forEach(sg => {
+    const b = document.createElement('button');
+    b.className = 'song' + (curSong && curSong.name === sg.name ? ' sel' : '');
+    const ic = document.createElement('em'); ic.textContent = '🎵'; ic.style.fontStyle = 'normal';
+    const t = document.createElement('span'); t.textContent = sg.name;
+    b.append(ic, t); b.onclick = () => loadSong(sg);
+    box.appendChild(b);
+  });
+}
+
+async function loadSong(sg) {
+  curSong = sg; localStorage.setItem('polsking_rhythm_song', sg.name);
+  raw = null; audioBuf = null; $('startBtn').disabled = true; $('filePick').classList.add('hidden');
+  setStatus('Ładowanie „' + sg.name + '”…'); renderSongs(); renderDiffs();
+  try {
+    if (!cache[sg.name]) {
+      const [mb, ab] = await Promise.all([fetchFirst(sg.mid), fetchFirst(sg.aud)]);
+      const r = parseMidi(mb); if (!r.length) throw new Error('W pliku MIDI nie ma nut');
+      cache[sg.name] = { raw: r, buf: await ensureCtx().decodeAudioData(ab) };
+    }
+  } catch (e) {
+    if (curSong !== sg) return;
+    setStatus(noSongs
+      ? 'Nie znaleziono piosenek. Dodaj do folderu samples/ pary plików, np. samples/nazwa.mid i samples/nazwa.wav (i otwórz stronę przez serwer). Możesz też wybrać pliki ręcznie:'
+      : 'Nie udało się wczytać „' + sg.name + '”. Sprawdź, czy istnieją pliki samples/' + sg.name + '.mid i samples/' + sg.name + '.wav.', 'err');
+    $('filePick').classList.toggle('hidden', !noSongs); renderSongs(); return;
+  }
+  if (curSong !== sg) return;           // w międzyczasie wybrano inną piosenkę
+  raw = cache[sg.name].raw; audioBuf = cache[sg.name].buf;
+  checkReady();
+}
+function checkReady() {
+  if (!(raw && audioBuf)) return;
+  const s = Math.round(audioBuf.duration);
+  setStatus(`✅ Gotowe! Długość ${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`, 'ok');
+  $('filePick').classList.add('hidden');
+  $('startBtn').disabled = false;
+  renderSongs(); renderDiffs();
+}
+// ręczny wybór plików (gdy strona otwarta bez serwera)
+$('fMidi').onchange = async e => { const f = e.target.files[0]; if (!f) return; try { await loadMidiBuf(await f.arrayBuffer()); curSong = { name: f.name.replace(/\.[^.]+$/, '') }; } catch (er) { raw = null; } checkReady(); };
+$('fMp3').onchange  = async e => { const f = e.target.files[0]; if (!f) return; try { await loadMp3Buf(await f.arrayBuffer()); } catch (er) { audioBuf = null; } checkReady(); };
+
+async function init() {
+  songs = await discoverSongs();
+  if (!songs.length) { noSongs = true; songs = [mkSong('midi', 'midi.mid', 'midi.mp3')]; songs[0].mid = ['midi.mid']; songs[0].aud = ['midi.mp3', 'midi.wav']; }
+  renderSongs();
+  const last = localStorage.getItem('polsking_rhythm_song');
+  loadSong(songs.find(x => x.name === last) || songs[0]);
+}
 
 // ====== MENU ======
 function renderDiffs() {
@@ -304,9 +396,10 @@ function renderDiffs() {
     b.onclick = () => { srcMode = id; localStorage.setItem('polsking_rhythm_src', id); renderDiffs(); };
     sb.appendChild(b);
   });
-  const bs = best[DIFFS[diffIdx].id + '_' + srcMode];
+  const bs = best[bestKey()];
   $('best').textContent = bs ? `🏆 Rekord: ${bs}` : '';
 }
+const bestKey = () => (curSong ? curSong.name : '') + '|' + DIFFS[diffIdx].id + '_' + srcMode;
 function renderOffset() { $('offVal').textContent = (offsetMs > 0 ? '+' : '') + offsetMs + ' ms'; }
 function changeOffset(dv) { offsetMs = Math.max(-300, Math.min(300, offsetMs + dv)); localStorage.setItem('polsking_rhythm_offset', offsetMs); renderOffset(); }
 $('offMinus').onclick = () => changeOffset(-10);
@@ -402,7 +495,7 @@ function finish() {
   $('rAcc').textContent = acc.toFixed(1) + '%';
   $('rCombo').textContent = maxCombo;
   $('rP').textContent = cnt.perfect; $('rG').textContent = cnt.good; $('rO').textContent = cnt.ok; $('rM').textContent = cnt.miss;
-  const id = DIFFS[diffIdx].id + '_' + srcMode, isNew = score > (best[id] || 0) && score > 0;
+  const id = bestKey(), isNew = score > (best[id] || 0) && score > 0;
   if (isNew) { best[id] = score; try { localStorage.setItem('polsking_rhythm_best', JSON.stringify(best)); } catch (e) {} }
   $('rNew').classList.toggle('hidden', !isNew);
   show('result');
@@ -533,7 +626,7 @@ function draw(t) {
 
 // ====== START ======
 renderOffset(); renderDiffs(); resize();
-autoload();
+init();
 </script>
 </body>
 </html>
