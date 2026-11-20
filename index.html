@@ -131,6 +131,16 @@ button { font-family: inherit; }
 .shop-price { font-weight: 800; color: var(--gold-dark); font-size: 14px; display: flex; justify-content: center; align-items: center; gap: 4px; }
 .shop-price img { width: 16px; }
 .shop-btn { margin-top: 10px; width: 100%; padding: 10px; font-size: 14px; }
+/* kompaktowy pasek na wąskich ekranach (jest więcej przycisków) */
+@media (max-width: 430px) {
+  .top-bar { padding: 10px 8px; }
+  .top-left { gap: 6px; }
+  .top-center { gap: 5px; }
+  .top-right { gap: 6px; }
+  .icon-btn { width: 32px; height: 32px; }
+  .brand-small { font-size: 16px; }
+}
+@media (max-width: 380px) { .brand-small { font-size: 0; gap: 0; } }
 </style>
 </head>
 <body>
@@ -236,6 +246,7 @@ function renderTopBar() {
       <div class="top-center">
         <button class="icon-btn" onclick="goView('news')"><img src="${IMAGES.news_icon}"></button>
         <button class="icon-btn" onclick="goView('shop')"><img src="${IMAGES.shop_icon}"></button>
+        <button class="icon-btn" onclick="location.href='minigra.html'" title="Minigra: Rytm">🎵</button>
         <button class="icon-btn" onclick="toggleTheme()">${progress.theme === 'dark' ? '☀️' : '🌙'}</button>
       </div>
       <div class="top-right">
