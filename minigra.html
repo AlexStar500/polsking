@@ -46,6 +46,7 @@ button { font-family: inherit; }
 .label { font-weight: 800; font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
 
 .chips { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; max-width: 300px; }
+.chips.three { grid-template-columns: 1fr 1fr 1fr; max-width: 340px; }
 .chip { padding: 10px 8px; border-radius: 14px; border: 2px solid var(--border); background: var(--panel); box-shadow: 0 4px 0 var(--border); color: var(--text); cursor: pointer; font-weight: 900; font-size: 15px; line-height: 1.2; }
 .chip small { display: block; font-size: 11px; font-weight: 700; color: var(--muted); }
 .chip.sel { border-color: var(--green); box-shadow: 0 4px 0 var(--green-d); background: #1e3311; }
@@ -96,6 +97,8 @@ button { font-family: inherit; }
       <label>midi.mid <input type="file" id="fMidi" accept=".mid,.midi,audio/midi"></label>
       <label>midi.mp3 <input type="file" id="fMp3" accept=".mp3,audio/mpeg"></label>
     </div>
+    <div class="label">Nuty z pliku MIDI</div>
+    <div class="chips three" id="srcs"></div>
     <div class="label">Poziom trudności</div>
     <div class="chips" id="diffs"></div>
     <div class="hint" id="best"></div>
@@ -179,7 +182,7 @@ function parseMidi(buf) {
       } else {
         const hi = st & 0xF0;
         if (hi === 0xC0 || hi === 0xD0) p += 1;
-        else { const a = d.getUint8(p), c = d.getUint8(p + 1); p += 2; if (hi === 0x90 && c > 0) notes.push({ tick, pitch: a }); }
+        else { const a = d.getUint8(p), c = d.getUint8(p + 1); p += 2; if (hi === 0x90 && c > 0) notes.push({ tick, pitch: a, ch: st & 15 }); }
       }
     }
     p = end;
@@ -195,26 +198,39 @@ function parseMidi(buf) {
     for (let i = 1; i < tempos.length; i++) tempos[i].sec = tempos[i - 1].sec + (tempos[i].tick - tempos[i - 1].tick) * tempos[i - 1].us / 1e6 / div;
     toSec = t => { let k = 0; for (let i = tempos.length - 1; i >= 0; i--) if (tempos[i].tick <= t) { k = i; break; } return tempos[k].sec + (t - tempos[k].tick) * tempos[k].us / 1e6 / div; };
   }
-  const out = notes.map(n => ({ time: toSec(n.tick), pitch: n.pitch }));
+  const out = notes.map(n => ({ time: toSec(n.tick), pitch: n.pitch, ch: n.ch }));
   out.sort((a, b) => a.time - b.time || b.pitch - a.pitch);
   return out;
 }
 
-// przypisanie wysokości dźwięku do 4 kolumn (równomiernie wg liczby nut)
-function assignLanes(raw) {
-  const sorted = raw.map(n => n.pitch).sort((a, b) => a - b), N = sorted.length, map = {};
-  let i = 0;
-  while (i < N) {
-    let j = i; while (j < N && sorted[j] === sorted[i]) j++;
-    map[sorted[i]] = Math.min(3, Math.floor(((i + j) / 2 / N) * 4));
-    i = j;
+// przypisanie nut do 4 kolumn - zawsze używa wszystkich czterech
+function assignLanes(pool) {
+  const ps = [...new Set(pool.map(n => n.pitch))].sort((a, b) => a - b), k = ps.length;
+  if (k >= 4) {                       // wysokość dźwięku -> kolumna (po równo wg liczby różnych dźwięków)
+    const rank = {}; ps.forEach((p, i) => rank[p] = Math.min(3, Math.floor(i * 4 / k)));
+    pool.forEach(n => n.lane = rank[n.pitch]);
+  } else {                            // mało różnych dźwięków (np. sam beat): "chodzenie" po kolumnach
+    let lane = 0, dir = 1, prev = null;
+    for (const n of pool) {
+      if (prev !== null) {
+        if (n.pitch > prev) lane = Math.min(3, lane + 2);
+        else if (n.pitch < prev) lane = Math.max(0, lane - 2);
+        else { lane += dir; if (lane > 3) { lane = 2; dir = -1; } else if (lane < 0) { lane = 1; dir = 1; } }
+      }
+      n.lane = lane; prev = n.pitch;
+    }
   }
-  raw.forEach(n => n.lane = map[n.pitch]);
 }
 
+function srcPool(mode) {
+  const f = mode === 'drums' ? n => n.ch === 9 : mode === 'melody' ? n => n.ch !== 9 : () => true;
+  const p = raw.filter(f);
+  return p.length ? p : raw;
+}
 function buildChart(diff) {
   const out = []; let last = -1e9;
-  for (const n of raw) if (n.time - last >= diff.gap) { out.push(n); last = n.time; }
+  for (const n of srcPool(srcMode)) if (n.time - last >= diff.gap) { out.push({ time: n.time, pitch: n.pitch }); last = n.time; }
+  assignLanes(out);
   return out;
 }
 
@@ -225,6 +241,7 @@ let actx = null, audioBuf = null, raw = null, src = null;
 let diffIdx = Math.max(0, DIFFS.findIndex(d => d.id === (localStorage.getItem('polsking_rhythm_diff') || 'normal')));
 let offsetMs = parseInt(localStorage.getItem('polsking_rhythm_offset') || '0', 10) || 0;
 let best = {}; try { best = JSON.parse(localStorage.getItem('polsking_rhythm_best') || '{}'); } catch (e) {}
+let srcMode = localStorage.getItem('polsking_rhythm_src') || 'melody';
 let state = 'menu';       // menu | play | pause | result
 let startAt = 0, endTime = 0, raf = 0;
 let laneNotes, lp, ds, total;
@@ -241,7 +258,7 @@ function ensureCtx() { if (!actx) { const AC = window.AudioContext || window.web
 async function loadMidiBuf(b) {
   const r = parseMidi(b);
   if (!r.length) throw new Error('W pliku MIDI nie ma nut');
-  assignLanes(r); raw = r;
+  raw = r;
 }
 async function loadMp3Buf(b) { audioBuf = await ensureCtx().decodeAudioData(b.slice(0)); }
 
@@ -279,7 +296,15 @@ function renderDiffs() {
     b.onclick = () => { diffIdx = i; localStorage.setItem('polsking_rhythm_diff', d.id); renderDiffs(); };
     box.appendChild(b);
   });
-  const bs = best[DIFFS[diffIdx].id];
+  const sb = $('srcs'); sb.innerHTML = '';
+  if (raw) [['melody', 'Melodia', 'bez perkusji'], ['drums', 'Perkusja', 'kanał 10'], ['all', 'Wszystko', 'razem']].forEach(([id, nm, sub]) => {
+    const b = document.createElement('button');
+    b.className = 'chip' + (id === srcMode ? ' sel' : '');
+    b.innerHTML = nm + `<small>${sub}</small>`;
+    b.onclick = () => { srcMode = id; localStorage.setItem('polsking_rhythm_src', id); renderDiffs(); };
+    sb.appendChild(b);
+  });
+  const bs = best[DIFFS[diffIdx].id + '_' + srcMode];
   $('best').textContent = bs ? `🏆 Rekord: ${bs}` : '';
 }
 function renderOffset() { $('offVal').textContent = (offsetMs > 0 ? '+' : '') + offsetMs + ' ms'; }
@@ -377,7 +402,7 @@ function finish() {
   $('rAcc').textContent = acc.toFixed(1) + '%';
   $('rCombo').textContent = maxCombo;
   $('rP').textContent = cnt.perfect; $('rG').textContent = cnt.good; $('rO').textContent = cnt.ok; $('rM').textContent = cnt.miss;
-  const id = DIFFS[diffIdx].id, isNew = score > (best[id] || 0) && score > 0;
+  const id = DIFFS[diffIdx].id + '_' + srcMode, isNew = score > (best[id] || 0) && score > 0;
   if (isNew) { best[id] = score; try { localStorage.setItem('polsking_rhythm_best', JSON.stringify(best)); } catch (e) {} }
   $('rNew').classList.toggle('hidden', !isNew);
   show('result');
